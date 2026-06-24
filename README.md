@@ -37,7 +37,7 @@ O presente sistema possui as seguintes funcionalidades:
 
 ## **Estrutura do Projecto**
 
-´´md
+´´´Estrutura em forma de arvore do projecto
 ExameEDII_T2_G13
 ├── Projecto
 │ │
@@ -65,7 +65,7 @@ ExameEDII_T2_G13
 │
 ├── README.md
 └── TrabalhoFinal_EDII_2026.pdf
-´´
+´´´
 
 ---
 

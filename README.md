@@ -67,101 +67,18 @@ ExameEDII_T2_G13
 
 ## **Ficheiros**
 
-- Biblioteca
-- Livro
-- Usuario
-- Emprestimo
+...
 
 ---
 
 ## **Atributos**
 
-1. Biblioteca
-
-- listaLivros
-- listaUsuarios
-- listaEmprestimos
-
-2. Livro
-
-- id
-- titulo
-- autor
-- genero
-- disponivel
-
-3. Usuario
-
-- id
-- nome
-- email
-- bi
-- nivelAcesso
-- ativo
-
-4. Emprestimo
-
-- id
-- livro
-- usuario
-- dataEmprestimo
-- dataDevolucao
-- devolvido
-
----
+## ...
 
 ## **Métodos**
 
-1. Biblioteca
-
-- menu()
-- adicionarLivro()
-- atualizarLivro()
-- eliminarLivro()
-- listarLivros()
-- adicionarUsuario()
-- atualizarUsuario()
-- bloquearUsuario()
-- eliminarUsuario()
-- adicionarEmprestimo()
-- devolverLivro()
-- verificarMulta()
-- carregarLivros()
-- carregarUsuarios()
-- carregarEmprestimos()
-
-2. Livro
-
-- Registar()
-- atualizar()
-- remover()
-- listar()
-
-3. Usuario
-
-- Registar()
-- atualizar()
-- bloquear()
-- remover()
-
-4. Emprestimo
-
-- realizarEmprestimo()
-- devolverLivro()
-- calcularMulta()
-
----
-
-## **Ficheiros**
-
-- Livro;
-- Usuario;
-- Emprestimo;
-
----
+## ...
 
 ## **Como Executar**
 
 ## **Futuras melhorias**
-
-- Adicionar Login Para funcionarios(para ter controle de usuários)

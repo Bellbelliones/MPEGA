@@ -37,35 +37,31 @@ O presente sistema possui as seguintes funcionalidades:
 
 ## **Estrutura do Projecto**
 
-´´´Estrutura em forma de arvore do projecto
+```text
 ExameEDII_T2_G13
 ├── Projecto
-│ │
-│ ├── include
-│ │ └── mpega.h
-│ │
-│ │
-│ ├── interface
-│ │ └── menus.c
-│ │
-│ │
-│ ├── mainDeTeste
-│ │ ├── maintest1.c
-│ │ ├── maintest2.c
-│ │ └── maintest3.c
-│ │
-│ │
-│ ├── src
-│ │ ├── avl.c
-│ │ ├── grafo.c
-│ │ └── hastableDuplo.c
-│ │
-│ ├── mainMPega.c
-│ └── Executavel
+│   ├── include
+│   │   └── mpega.h
+│   │
+│   ├── interface
+│   │   └── menus.c
+│   │
+│   ├── mainDeTeste
+│   │   ├── maintest1.c
+│   │   ├── maintest2.c
+│   │   └── maintest3.c
+│   │
+│   ├── src
+│   │   ├── avl.c
+│   │   ├── grafo.c
+│   │   └── hastableDuplo.c
+│   │
+│   ├── mainMPega.c
+│   └── Executavel
 │
 ├── README.md
 └── TrabalhoFinal_EDII_2026.pdf
-´´´
+```
 
 ---
 

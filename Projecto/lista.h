@@ -1,4 +1,4 @@
-
+#ifndef LISTA_H
 #define LISTA_H
 
 typedef struct
@@ -28,3 +28,5 @@ void inserir_Lista(Lista *l, Usuario u);
 No *buscar(Lista *l, int id);
 int remover_Lista(Lista *l, int id);
 void imprimir(Lista *l);
+
+#endif

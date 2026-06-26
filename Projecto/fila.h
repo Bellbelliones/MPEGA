@@ -1,18 +1,19 @@
 #ifndef FILA_H
 #define FILA_H
 
-#include "lista.h" 
-
-// Nó da fila
-typedef struct noFila {
-    Usuario user;           
+#include "lista.h"
+// Nï¿½ da fila
+typedef struct noFila
+{
+    Usuario user;
     struct noFila *prox;
 } NoFila;
 
 // Controlo da Fila
-typedef struct {
-    NoFila *frente;         
-    NoFila *atras;           
+typedef struct
+{
+    NoFila *frente;
+    NoFila *atras;
     int tamanho;
 } Fila;
 

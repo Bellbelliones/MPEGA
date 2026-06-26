@@ -114,7 +114,7 @@ ExameEDII_T2_G13
 
 **1 - AVL**
 
-´´´bash
+```bash
 // Funções da AVL
 // Criação
 AVL *criarAVL();
@@ -145,22 +145,23 @@ void mostrarAVL(NoAvl *raiz, int nivel);
 int contarNos(NoAvl *raiz);
 int arvoreVazia(NoAvl *raiz);
 void destruirAVL(NoAvl *raiz);
-´´´
+```
 
 **2 - Fila**
 
-´´´bash
+```bash
 ...
-´´´
+```
 
 **3 - Grafo**
 
-´´´bash
+```bash
 ...
-´´´
+```
 
 **4 - Hastable Encadeado**
-´´´bash
+
+```bash
 void inicializarTabela(Lista t[]);
 int funcaoHash(int id);
 
@@ -183,41 +184,41 @@ void sessao();
 // auxiliares
 void limparTela();
 void aguardarEnter();
-´´´
+```
 
 **5 - Lista**
 
-´´´bash
+```bash
 void inicializar(Lista *l);
 void inserir_Lista(Lista *l, Usuario u);
 No *buscar(Lista *l, int id);
 int remover_Lista(Lista *l, int id);
 void imprimir(Lista *l);
-´´´
+```
 
 **6 - Menu**
 
-´´´bash
+```bash
 int menuADM();
 int menuConduto();
 int menuPassageir();
-´´´
-
-## ...
+```
 
 ## **Como Executar**
 
 Caso já tenha o GitHub instalado e configurado no terminal do VSCode, é só copiar e colar os seguintes códigos no terminal do VSCode:
 
 Para compilar:
-´´´bash
+
+```bash
 gcc \*.c -Wall -Wextra -Werror -o executavel
-´´´
+```
 
 Para Executar:
-´´´bash
+
+```bash
 ./executavel
-´´´
+```
 
 ## **Futuras melhorias**
 

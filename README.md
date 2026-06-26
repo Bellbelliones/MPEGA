@@ -49,6 +49,10 @@ O presente sistema possui as seguintes funcionalidades:
 
 ```text
 ExameEDII_T2_G13
+    ├── imagens
+    │   ├── adm.png
+    │   ├── condutor.png
+    │   └── passageiro.png
     ├── Projecto
     │   ├── avl.c
     │   ├── avl.h
@@ -224,15 +228,15 @@ Para Executar:
 
 ### Menu Admnistrador
 
-![Administrador](images/adm.png)
+![Administrador](imagens/adm.png)
 
 ### Menu Condutor
 
-![Condutor](images/condutor.png)
+![Condutor](imagens/condutor.png)
 
 ### Menu Passageiro
 
-![Passageiro](images/passageiro.png)
+![Passageiro](imagens/passageiro.png)
 
 ## **Notas**
 

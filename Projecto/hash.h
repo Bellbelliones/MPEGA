@@ -14,6 +14,7 @@ void imprimirTabela(Lista t[]);
 // Funções de controle do sistema (Cadastro, Menus e Login)
 void cadastrar_usuario(Lista t[]);
 void fazerLogin(Lista t[]);
+Usuario *login(Lista t[], char email[], char senha[]);
 
 // Menus
 void menuPassageiro(Usuario u);
@@ -21,6 +22,8 @@ void menuAdmin(Usuario u);
 void menuCondutor(Usuario u);
 void sessao();
 
-Usuario *login(Lista t[], char email[], char senha[]);
+// auxiliares
+void limparTela();
+void aguardarEnter();
 
 #endif

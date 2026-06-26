@@ -220,6 +220,24 @@ Para Executar:
 ./executavel
 ```
 
+## **Anexos Dos Menus em Imagem**
+
+### Menu Admnistrador
+
+![Administrador](images/adm.png)
+
+### Menu Condutor
+
+![Condutor](images/condutor.png)
+
+### Menu Passageiro
+
+![Passageiro](images/passageiro.png)
+
+## **Notas**
+
+O Sistema já está quase finalizado, só falta terminarmos a parte dos grafos das vias
+
 ## **Futuras melhorias**
 
 ### Tornar mais inteligente a procura, e criar mais funcionalidades.

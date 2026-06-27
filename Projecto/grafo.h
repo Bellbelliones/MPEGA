@@ -1,26 +1,28 @@
-#ifndef GRAFO_H
-#define GRAFO_H
+#ifndef grafos_h
+#define grafos_h
 
-// 1. Representa a ligação (Aresta) para outra cidade
-typedef struct adjacencia {
-    int vertice_destino;     // ID da cidade de destino
-    float preco;             // Peso da aresta (ex: custo da viagem)
-    float distancia;         // Outro peso opcional (ex: quilómetros)
-    struct adjacencia *prox; // Próxima ligação desta mesma cidade de origem
-} Adjacencia;
+#include "tipos.h"
 
-// 2. Representa a estrutura de cada Cidade (Vértice)
-typedef struct {
-    int id;                  // ID único da cidade
-    char nome[60];           // Nome da localidade/ponto de paragem
-    Adjacencia *inicio;      // Ponteiro para a lista de cidades vizinhas
-} Vertice;
+#define MAX_CIDADES 100
+#define INFINITO 999999
 
-// 3. Estrutura Principal do Grafo
-typedef struct {
-    int num_vertices;        // Total de cidades cadastradas
-    int max_vertices;        // Limite máximo alocado para o array
-    Vertice *vertices;       // Array (ponteiro) que vai conter as cidades
-} Grafo;
+void inicializarGrafo();
+
+/* CIDADES */
+int adicionarCidade(Cidade cidade);
+int removerCidade(int idCidade);
+int existeCidade(int idCidade);
+int procurarCidadePorNome(char nome[]);
+void listarCidades();
+
+/* ROTAS */
+int adicionarRota(Rota rota);
+int removerRota(int origem,int destino);
+int existeRota(int origem,int destino);
+int atualizarEstadoVia(int origem,int destino,char novoEstado[]);
+void listarRotas();
+
+/* DIJKSTRA */
+void dijkstra(int origem,int destino);
 
 #endif

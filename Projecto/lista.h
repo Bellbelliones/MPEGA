@@ -8,6 +8,7 @@ typedef struct
     char nome[50];
     char email[100];
     char senha[30];
+    int estado;
     int tipo;
 } Usuario;
 

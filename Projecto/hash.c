@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "dashboard.h"
 #include "hash.h"
 
 // Definicao de cores
@@ -56,12 +57,44 @@ No *buscarUsuario(Lista t[], int id)
     return buscar(&t[pos], id);
 }
 
-int remover(Lista t[], int id)
+int atualizarUsuario(Lista t[], int id, char *nome, char *telemovel, char *email, char *senha, int acesso)
+{
+    No *encontrado = buscarUsuario(t, id);
+
+    if (!encontrado)
+        return -1; // Negativo significa falha
+
+    strcpy(encontrado->user.nome, nome);
+    strcpy(encontrado->user.telefone, telemovel);
+    strcpy(encontrado->user.email, email);
+    strcpy(encontrado->user.senha, senha);
+    encontrado->user.tipo = acesso;
+
+    return 0; // Significa sucesso
+}
+int removerUsuario(Lista t[], int id)
 {
     int pos = funcaoHash(id);
     return remover_Lista(&t[pos], id);
 }
+int bloquearDesbloquearUsuario(Lista t[], int id)
+{
+    No *encontrado = buscarUsuario(t, id);
 
+    if (!encontrado)
+        return -1; // Negativo significa falha
+
+    if (encontrado->user.estado == 0)
+    {
+        encontrado->user.estado = 1;
+        return 1; // foi desbloquado
+    }
+    else
+    {
+        encontrado->user.estado = 0;
+        return 2; // foi bloquado
+    }
+}
 void imprimirTabela(Lista t[])
 {
     limparTela();
@@ -107,381 +140,12 @@ void cadastrar_usuario(Lista t[])
     printf(" Tipo (1-Passageiro | 2-Condutor | 3-Admin): ");
     scanf("%d", &u.tipo);
 
+    u.estado = 1; // por padrão ele guarda o estado como 1 que simboliza que está ativo
     inserir_usuario(t, u);
 
     printf("\n==========================================\n");
     printf(" >>> USUARIO CADASTRADO COM SUCESSO! <<<\n");
     printf("==========================================\n");
-    aguardarEnter();
-}
-
-void menuPassageiro(Usuario u)
-{
-    int op;
-    do
-    {
-        limparTela();
-        printf("==========================================\n");
-        printf("   PAINEL DO PASSAGEIRO - MPEGA           \n");
-        printf("==========================================\n");
-        printf(" Olá, %s! Seja bem-vindo de volta.\n\n", u.nome);
-        printf(" [1] Procurar Viagens Disponiveis\n");
-        printf(" [2] Reservar uma Nova Viagem\n");
-        printf(" [3] Visualizar Minhas Reservas\n");
-        printf(" [0] Fazer Logout (Sair)\n");
-        printf("------------------------------------------\n");
-        printf(" Escolha uma opcao: ");
-        scanf("%d", &op);
-
-        if (op != 0 && op != 1 && op != 2 && op != 3)
-        {
-            printf("\n Opcao Invalida! Tente novamente.");
-            aguardarEnter();
-        }
-        else if (op != 0)
-        {
-            printf("\n Entrando na funcionalidade %d... (Funcionalidade em desenvolvimento)", op);
-            aguardarEnter();
-        }
-    } while (op != 0);
-
-    printf("\n Efetuando logout da conta de Passageiro...\n");
-    aguardarEnter();
-}
-
-void menuCondutor(Usuario u)
-{
-    int op;
-    do
-    {
-        limparTela();
-        printf("==========================================\n");
-        printf("    PAINEL DO CONDUTOR - MPEGA            \n");
-        printf("==========================================\n");
-        printf(" Olá, Condutor %s!\n\n", u.nome);
-        printf(" [1] Publicar Nova Oferta de Viagem\n");
-        printf(" [2] Visualizar Lista de Passageiros\n");
-        printf(" [3] Cancelar Viagem Publicada\n");
-        printf(" [0] Fazer Logout (Sair)\n");
-        printf("------------------------------------------\n");
-        printf(" Escolha uma opcao: ");
-        scanf("%d", &op);
-
-        if (op != 0 && op != 1 && op != 2 && op != 3)
-        {
-            printf("\n Opcao Invalida! Tente novamente.");
-            aguardarEnter();
-        }
-        else if (op != 0)
-        {
-            printf("\n Entrando na funcionalidade %d... (Funcionalidade em desenvolvimento)", op);
-            aguardarEnter();
-        }
-    } while (op != 0);
-
-    printf("\n Efetuando logout da conta de Condutor...\n");
-    aguardarEnter();
-}
-
-void menuAdmin(Usuario u)
-{
-    int op = 0;
-    int escolha = 0;
-    do
-    {
-        limparTela();
-        printf("Usuario: %s\n\n", u.nome);
-        printf(CYAN);
-        printf("╔══════════════════════════════════════════════════════════════╗\n");
-        printf("║                     SISTEMA DE VIAGENS                       ║\n");
-        printf("╠══════════════════════════════════════════════════════════════╣\n");
-        printf("║                 Desenvolvido por: GRUPO 13                   ║\n");
-        printf(RESET);
-
-        printf(CYAN "║" MAGENTA "  [1]" WHITE " Gestão de Utilizadores                                  " CYAN "║\n" RESET);
-        printf(CYAN "║" MAGENTA "  [2]" WHITE " Gestão de Veículos                                      " CYAN "║\n" RESET);
-        printf(CYAN "║" MAGENTA "  [3]" WHITE " Gestão de Rotas                                         " CYAN "║\n" RESET);
-        printf(CYAN "║" MAGENTA "  [4]" WHITE " Publicar Viagem                                         " CYAN "║\n" RESET);
-        printf(CYAN "║" MAGENTA "  [5]" WHITE " Procurar Viagem                                         " CYAN "║\n" RESET);
-        printf(CYAN "║" MAGENTA "  [6]" WHITE " Reservar Lugar                                          " CYAN "║\n" RESET);
-        printf(CYAN "║" MAGENTA "  [7]" WHITE " Aprovar Passageiros                                     " CYAN "║\n" RESET);
-        printf(CYAN "║" MAGENTA "  [8]" WHITE " Consultar Melhor Rota                                   " CYAN "║\n" RESET);
-        printf(CYAN "║" MAGENTA "  [9]" WHITE " Relatórios                                              " CYAN "║\n" RESET);
-        printf(CYAN "║" MAGENTA "  [0]" WHITE " Sair                                                    " CYAN "║\n" RESET);
-
-        printf(CYAN);
-        printf("╚══════════════════════════════════════════════════════════════╝\n");
-        printf(RESET);
-
-        printf(MAGENTA "\n➜ Escolha uma opção: " RESET);
-        scanf("%d", &op);
-        switch (op)
-        {
-        case 1:
-
-            printf("Usuario: %s\n\n", u.nome);
-            printf(CYAN);
-            printf("╔══════════════════════════════════════════════════════════════╗\n");
-            printf("║                     Gestão de Utilizadores                       ║\n");
-            printf("╠══════════════════════════════════════════════════════════════╣\n");
-            printf(RESET);
-
-            printf(CYAN "║" MAGENTA "  [1]" WHITE " Registar                                                " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [2]" WHITE " Procurar                                                " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [3]" WHITE " Atualizar                                               " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [4]" WHITE " Bloquear / Desbloquear                                  " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [5]" WHITE " Remover                                                 " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [0]" WHITE " Sair                                                    " CYAN "║\n" RESET);
-
-            printf(CYAN);
-            printf("╚══════════════════════════════════════════════════════════════╝\n");
-            printf(RESET);
-
-            printf(MAGENTA "\n➜ Escolha uma opção: " RESET);
-            scanf("%d", &escolha);
-            switch (escolha)
-            {
-            case 1:
-
-                printf(CYAN);
-                printf("╔══════════════════════════════════════════════════════════════╗\n");
-                printf("║                      Registo de Utilizador                   ║\n");
-                printf("╚══════════════════════════════════════════════════════════════╝\n");
-                printf(RESET);
-                printf("\n\n");
-                break;
-
-            case 2:
-
-                printf(CYAN);
-                printf("╔══════════════════════════════════════════════════════════════╗\n");
-                printf("║                      Procura de Utilizador                   ║\n");
-                printf("╚══════════════════════════════════════════════════════════════╝\n");
-                printf(RESET);
-                printf("\n\n");
-                break;
-            case 3:
-
-                printf(CYAN);
-                printf("╔══════════════════════════════════════════════════════════════╗\n");
-                printf("║                            Atualizar                         ║\n");
-                printf("╚══════════════════════════════════════════════════════════════╝\n");
-                printf(RESET);
-                printf("\n\n");
-                break;
-            case 4:
-
-                printf(CYAN);
-                printf("╔══════════════════════════════════════════════════════════════╗\n");
-                printf("║                      Bloquear / Desbloquear                  ║\n");
-                printf("╚══════════════════════════════════════════════════════════════╝\n");
-                printf(RESET);
-                printf("\n\n");
-                break;
-            case 5:
-
-                printf(CYAN);
-                printf("╔══════════════════════════════════════════════════════════════╗\n");
-                printf("║                             Remover                          ║\n");
-                printf("╚══════════════════════════════════════════════════════════════╝\n");
-                printf(RESET);
-                printf("\n\n");
-                break;
-            case 0:
-
-                printf(CYAN);
-                printf("╔══════════════════════════════════════════════════════════════╗\n");
-                printf("║                          Voltando...                         ║\n");
-                printf("╚══════════════════════════════════════════════════════════════╝\n");
-                printf(RESET);
-                printf("\n\n");
-                break;
-            }
-            break;
-        case 2:
-
-            printf("Usuario: %s\n\n", u.nome);
-            printf(CYAN);
-            printf("╔══════════════════════════════════════════════════════════════╗\n");
-            printf("║                        Gestão de Veiculos                    ║\n");
-            printf("╠══════════════════════════════════════════════════════════════╣\n");
-            printf(RESET);
-
-            printf(CYAN "║" MAGENTA "  [1]" WHITE " Registar                                                " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [2]" WHITE " Procurar                                                " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [3]" WHITE " Atualizar                                               " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [4]" WHITE " Bloquear / Desbloquear                                  " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [5]" WHITE " Remover                                                 " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [0]" WHITE " Sair                                                    " CYAN "║\n" RESET);
-
-            printf(CYAN);
-            printf("╚══════════════════════════════════════════════════════════════╝\n");
-            printf(RESET);
-
-            printf(MAGENTA "\n➜ Escolha uma opção: " RESET);
-            break;
-        case 3:
-
-            printf("Usuario: %s\n\n", u.nome);
-            printf(CYAN);
-            printf("╔══════════════════════════════════════════════════════════════╗\n");
-            printf("║                        Gestão de Rotas                       ║\n");
-            printf("╠══════════════════════════════════════════════════════════════╣\n");
-            printf(RESET);
-
-            printf(CYAN "║" MAGENTA "  [1]" WHITE " Registar                                                " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [2]" WHITE " Procurar                                                " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [3]" WHITE " Atualizar                                               " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [4]" WHITE " Bloquear / Desbloquear                                  " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [5]" WHITE " Remover                                                 " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [0]" WHITE " Sair                                                    " CYAN "║\n" RESET);
-
-            printf(CYAN);
-            printf("╚══════════════════════════════════════════════════════════════╝\n");
-            printf(RESET);
-
-            printf(MAGENTA "\n➜ Escolha uma opção: " RESET);
-            break;
-        case 4:
-
-            printf("Usuario: %s\n\n", u.nome);
-            printf(CYAN);
-            printf("╔══════════════════════════════════════════════════════════════╗\n");
-            printf("║                        Publicar Viagens                      ║\n");
-            printf("╠══════════════════════════════════════════════════════════════╣\n");
-            printf(RESET);
-
-            printf(CYAN "║" MAGENTA "  [1]" WHITE " Registar                                                " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [2]" WHITE " Procurar                                                " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [3]" WHITE " Atualizar                                               " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [4]" WHITE " Bloquear / Desbloquear                                  " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [5]" WHITE " Remover                                                 " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [0]" WHITE " Sair                                                    " CYAN "║\n" RESET);
-
-            printf(CYAN);
-            printf("╚══════════════════════════════════════════════════════════════╝\n");
-            printf(RESET);
-
-            printf(MAGENTA "\n➜ Escolha uma opção: " RESET);
-            break;
-        case 5:
-
-            printf("Usuario: %s\n\n", u.nome);
-            printf(CYAN);
-            printf("╔══════════════════════════════════════════════════════════════╗\n");
-            printf("║                       Procurar Viagens                       ║\n");
-            printf("╠══════════════════════════════════════════════════════════════╣\n");
-            printf(RESET);
-
-            printf(CYAN "║" MAGENTA "  [1]" WHITE " Registar                                                " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [2]" WHITE " Procurar                                                " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [3]" WHITE " Atualizar                                               " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [4]" WHITE " Bloquear / Desbloquear                                  " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [5]" WHITE " Remover                                                 " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [0]" WHITE " Sair                                                    " CYAN "║\n" RESET);
-
-            printf(CYAN);
-            printf("╚══════════════════════════════════════════════════════════════╝\n");
-            printf(RESET);
-
-            printf(MAGENTA "\n➜ Escolha uma opção: " RESET);
-            break;
-        case 6:
-
-            printf("Usuario: %s\n\n", u.nome);
-            printf(CYAN);
-            printf("╔══════════════════════════════════════════════════════════════╗\n");
-            printf("║                        Reservar Lugar                        ║\n");
-            printf("╠══════════════════════════════════════════════════════════════╣\n");
-            printf(RESET);
-
-            printf(CYAN "║" MAGENTA "  [1]" WHITE " Registar                                                " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [2]" WHITE " Procurar                                                " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [3]" WHITE " Atualizar                                               " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [4]" WHITE " Bloquear / Desbloquear                                  " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [5]" WHITE " Remover                                                 " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [0]" WHITE " Sair                                                    " CYAN "║\n" RESET);
-
-            printf(CYAN);
-            printf("╚══════════════════════════════════════════════════════════════╝\n");
-            printf(RESET);
-
-            printf(MAGENTA "\n➜ Escolha uma opção: " RESET);
-            break;
-        case 7:
-
-            printf("Usuario: %s\n\n", u.nome);
-            printf(CYAN);
-            printf("╔══════════════════════════════════════════════════════════════╗\n");
-            printf("║                     Aprovar Passageiros                      ║\n");
-            printf("╠══════════════════════════════════════════════════════════════╣\n");
-            printf(RESET);
-
-            printf(CYAN "║" MAGENTA "  [1]" WHITE " Registar                                                " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [2]" WHITE " Procurar                                                " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [3]" WHITE " Atualizar                                               " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [4]" WHITE " Bloquear / Desbloquear                                  " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [5]" WHITE " Remover                                                 " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [0]" WHITE " Sair                                                    " CYAN "║\n" RESET);
-
-            printf(CYAN);
-            printf("╚══════════════════════════════════════════════════════════════╝\n");
-            printf(RESET);
-
-            printf(MAGENTA "\n➜ Escolha uma opção: " RESET);
-            break;
-        case 8:
-
-            printf("Usuario: %s\n\n", u.nome);
-            printf(CYAN);
-            printf("╔══════════════════════════════════════════════════════════════╗\n");
-            printf("║                     Consultar Melhor Rota                    ║\n");
-            printf("╠══════════════════════════════════════════════════════════════╣\n");
-            printf(RESET);
-
-            printf(CYAN "║" MAGENTA "  [1]" WHITE " Registar                                                " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [2]" WHITE " Procurar                                                " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [3]" WHITE " Atualizar                                               " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [4]" WHITE " Bloquear / Desbloquear                                  " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [5]" WHITE " Remover                                                 " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [0]" WHITE " Sair                                                    " CYAN "║\n" RESET);
-
-            printf(CYAN);
-            printf("╚══════════════════════════════════════════════════════════════╝\n");
-            printf(RESET);
-
-            printf(MAGENTA "\n➜ Escolha uma opção: " RESET);
-            break;
-        case 9:
-
-            printf("Usuario: %s\n\n", u.nome);
-            printf(CYAN);
-            printf("╔══════════════════════════════════════════════════════════════╗\n");
-            printf("║                           Relatórios                         ║\n");
-            printf("╠══════════════════════════════════════════════════════════════╣\n");
-            printf(RESET);
-
-            printf(CYAN "║" MAGENTA "  [1]" WHITE " Registar                                                " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [2]" WHITE " Procurar                                                " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [3]" WHITE " Atualizar                                               " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [4]" WHITE " Bloquear / Desbloquear                                  " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [5]" WHITE " Remover                                                 " CYAN "║\n" RESET);
-            printf(CYAN "║" MAGENTA "  [0]" WHITE " Sair                                                    " CYAN "║\n" RESET);
-
-            printf(CYAN);
-            printf("╚══════════════════════════════════════════════════════════════╝\n");
-            printf(RESET);
-
-            printf(MAGENTA "\n➜ Escolha uma opção: " RESET);
-            break;
-        case 0:
-            printf("Saindo do sistema");
-            break;
-        default:
-            printf("Opcao selecionada invalida\n");
-        }
-    } while (op != 0);
-
     aguardarEnter();
 }
 
@@ -545,7 +209,7 @@ void fazerLogin(Lista t[])
         menuCondutor(*u);
         break;
     case 3:
-        menuAdmin(*u);
+        menuAdmin(t, *u);
         break;
     default:
         printf("Erro crítico: Tipo de usuario nao reconhecido!\n");
@@ -553,10 +217,8 @@ void fazerLogin(Lista t[])
         break;
     }
 }
-void sessao()
+void sessao(Lista t[])
 {
-    Lista tabela[TAM];
-    inicializarTabela(tabela);
 
     int op;
 
@@ -577,10 +239,10 @@ void sessao()
         switch (op)
         {
         case 1:
-            cadastrar_usuario(tabela);
+            cadastrar_usuario(t);
             break;
         case 2:
-            fazerLogin(tabela);
+            fazerLogin(t);
             break;
         case 0:
             limparTela();
@@ -596,4 +258,45 @@ void sessao()
         }
 
     } while (op != 0);
+}
+void exibirUsuario(Lista t[], int id)
+{
+    No *getUsuario = buscarUsuario(t, id);
+    printf("\n\n");
+
+    printf("══════════════════════════════════════════════════════════════\n");
+    printf("Nome: %s\n", getUsuario->user.nome);
+    printf("══════════════════════════════════════════════════════════════\n");
+    printf("Telefone: %s\n", getUsuario->user.telefone);
+    printf("══════════════════════════════════════════════════════════════\n");
+    printf("E-mail: %s\n", getUsuario->user.email);
+    printf("══════════════════════════════════════════════════════════════\n");
+    printf("Nivel de Acesso: ");
+    switch (getUsuario->user.tipo)
+    {
+    case 1:
+        printf("Passageiro\n");
+        break;
+    case 2:
+        printf("Condutor\n");
+        break;
+    case 3:
+        printf("Administrador\n");
+        break;
+    }
+    printf("══════════════════════════════════════════════════════════════\n");
+    printf("Estado: ");
+    switch (getUsuario->user.estado)
+    {
+    case 1:
+        printf("Ativo\n");
+        break;
+    case 0:
+        printf("Inativo\n");
+        break;
+    default:
+        printf("Erro irreconhecivel\n");
+        break;
+    }
+    printf("══════════════════════════════════════════════════════════════\n\n");
 }

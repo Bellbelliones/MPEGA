@@ -1,12 +1,11 @@
-#include <stdio.h>
+/*#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "grafo.h"      // 👈 OBRIGATÓRIO
+#include "grafo.h" // 👈 OBRIGATÓRIO
 #include "ficheiros.h"
 #include "hash.h"
 
-
-/* protótipos */
+// protótipos
 void limparTela();
 void cadastrar_usuario(Lista tabela[]);
 void fazerLogin(Lista tabela[]);
@@ -18,10 +17,10 @@ int main()
     Lista tabela[TAM];
     inicializarTabela(tabela);
 
-
     int op;
 
-    do {
+    do
+    {
         limparTela();
 
         printf("==========================================\n");
@@ -38,37 +37,38 @@ int main()
 
         scanf("%d", &op);
 
-        switch(op)
+        switch (op)
         {
-            case 1:
-                cadastrar_usuario(tabela);
-                break;
+        case 1:
+            cadastrar_usuario(tabela);
+            break;
 
-            case 2:
-                fazerLogin(tabela);
-                break;
+        case 2:
+            fazerLogin(tabela);
+            break;
 
-            case 3:
-                menuGrafos();
-                break;
+        case 3:
+            menuGrafos();
+            break;
 
-            case 0:
-                limparTela();
-                printf("Obrigado por usar o MPEGA!\n");
-                break;
+        case 0:
+            limparTela();
+            printf("Obrigado por usar o MPEGA!\n");
+            break;
 
-            default:
-                printf("\nOpcao invalida!\n");
-                getchar(); getchar();
-                break;
+        default:
+            printf("\nOpcao invalida!\n");
+            getchar();
+            getchar();
+            break;
         }
 
-    } while(op != 0);
+    } while (op != 0);
 
     return 0;
 }
 
-/* ================= MENU GRAFOS ================= */
+// ================= MENU GRAFOS =================
 
 void menuGrafos()
 {
@@ -86,70 +86,71 @@ void menuGrafos()
 
         scanf("%d", &op);
 
-        switch(op)
+        switch (op)
         {
-            case 1:
-            {
-                Cidade c;
+        case 1:
+        {
+            Cidade c;
 
-                printf("ID: ");
-                scanf("%d", &c.idCidade);
+            printf("ID: ");
+            scanf("%d", &c.idCidade);
 
-                printf("Nome: ");
-                scanf(" %[^\n]", c.nome);
+            printf("Nome: ");
+            scanf(" %[^\n]", c.nome);
 
-                adicionarCidade(c);
-                break;
-            }
-
-            case 2:
-                listarCidades();
-                break;
-
-            case 3:
-            {
-                Rota r;
-
-                printf("ID Rota: ");
-                scanf("%d", &r.idRota);
-
-                printf("Origem: ");
-                scanf("%d", &r.origem);
-
-                printf("Destino: ");
-                scanf("%d", &r.destino);
-
-                printf("Distancia: ");
-                scanf("%d", &r.distancia);
-
-                printf("Tempo: ");
-                scanf("%d", &r.tempoEstimado);
-
-                printf("Estado: ");
-                scanf(" %[^\n]", r.estadoVia);
-
-                adicionarRota(r);
-                break;
-            }
-
-            case 4:
-                listarRotas();
-                break;
-
-            case 5:
-            {
-                int o, d;
-
-                printf("Origem: ");
-                scanf("%d", &o);
-
-                printf("Destino: ");
-                scanf("%d", &d);
-
-                dijkstra(o, d);
-                break;
-            }
+            adicionarCidade(c);
+            break;
         }
 
-    } while(op != 0);
+        case 2:
+            listarCidades();
+            break;
+
+        case 3:
+        {
+            Rota r;
+
+            printf("ID Rota: ");
+            scanf("%d", &r.idRota);
+
+            printf("Origem: ");
+            scanf("%d", &r.origem);
+
+            printf("Destino: ");
+            scanf("%d", &r.destino);
+
+            printf("Distancia: ");
+            scanf("%d", &r.distancia);
+
+            printf("Tempo: ");
+            scanf("%d", &r.tempoEstimado);
+
+            printf("Estado: ");
+            scanf(" %[^\n]", r.estadoVia);
+
+            adicionarRota(r);
+            break;
+        }
+
+        case 4:
+            listarRotas();
+            break;
+
+        case 5:
+        {
+            int o, d;
+
+            printf("Origem: ");
+            scanf("%d", &o);
+
+            printf("Destino: ");
+            scanf("%d", &d);
+
+            dijkstra(o, d);
+            break;
+        }
+        }
+
+    } while (op != 0);
 }
+*/

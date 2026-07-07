@@ -150,7 +150,8 @@ int menuCondutor(Usuario u)
 
 int menuAdmin(Lista t[], Usuario u)
 {
-    // ainda estamos a testar as funções fora da main
+
+        // ainda estamos a testar as funções fora da main
     // antes de colocar aqui na main
 
     char n[30], e[30], tel[15], s[30];
@@ -158,6 +159,7 @@ int menuAdmin(Lista t[], Usuario u)
 
     int op = 0;
     int escolha = 0;
+    int decisao = 0;
     do
     {
         limparTela();
@@ -172,7 +174,7 @@ int menuAdmin(Lista t[], Usuario u)
         printf(RESET);
 
         printf(CYAN "║" MAGENTA "  [1]" WHITE " Gestão de Utilizadores                                  " CYAN "║\n" RESET);
-        printf(CYAN "║" MAGENTA "  [2]" WHITE " Gestão de Rotas                                         " CYAN "║\n" RESET);
+        printf(CYAN "║" MAGENTA "  [2]" WHITE " Gestão de Rotas & Vias                                  " CYAN "║\n" RESET);
         printf(CYAN "║" MAGENTA "  [0]" WHITE " Sair                                                    " CYAN "║\n" RESET);
 
         printf(CYAN);
@@ -358,7 +360,7 @@ int menuAdmin(Lista t[], Usuario u)
             {
                 printf(CYAN);
                 printf("╔══════════════════════════════════════════════════════════════╗\n");
-                printf("║                         Gestão de Rotas                      ║\n");
+                printf("║                     Gestão de Rotas/Cidades                  ║\n");
                 printf("╠══════════════════════════════════════════════════════════════╣\n");
                 printf(RESET);
 
@@ -378,13 +380,63 @@ int menuAdmin(Lista t[], Usuario u)
                 switch (escolha)
                 {
                 case 1:
+                    do
+                    {
+                        printf(CYAN);
+                        printf("╔══════════════════════════════════════════════════════════════╗\n");
+                        printf("║                  Resgistar de Rotas/Cidades                  ║\n");
+                        printf("╠══════════════════════════════════════════════════════════════╣\n");
+                        printf(RESET);
 
-                    printf(CYAN);
-                    printf("╔══════════════════════════════════════════════════════════════╗\n");
-                    printf("║                          Registo de Rotas                    ║\n");
-                    printf("╚══════════════════════════════════════════════════════════════╝\n");
-                    printf(RESET);
-                    printf("\n\n");
+                        printf(CYAN "║" MAGENTA "  [1]" WHITE " Rotas                                                   " CYAN "║\n" RESET);
+                        printf(CYAN "║" MAGENTA "  [2]" WHITE " Cidade                                                  " CYAN "║\n" RESET);
+                        printf(CYAN "║" MAGENTA "  [0]" WHITE " Voltar                                                  " CYAN "║\n" RESET);
+
+                        printf(CYAN);
+                        printf("╚══════════════════════════════════════════════════════════════╝\n");
+                        printf(RESET);
+                        printf("R: ");
+                        scanf("%d", &decisao);
+                        switch (decisao)
+                        {
+                        case 1:
+                            Rota r;
+
+                            printf("ID Rota: ");
+                            scanf("%d", &r.idRota);
+
+                            printf("Origem: ");
+                            scanf("%d", &r.origem);
+
+                            printf("Destino: ");
+                            scanf("%d", &r.destino);
+
+                            printf("Distancia: ");
+                            scanf("%d", &r.distancia);
+
+                            printf("Tempo: ");
+                            scanf("%d", &r.tempoEstimado);
+
+                            printf("Estado: ");
+                            scanf(" %[^\n]", r.estadoVia);
+
+                            adicionarRota(r);
+                            break;
+
+                        case 2:
+
+                            printf("Rota registada com sucesso\n");
+                            break;
+
+                        case 0:
+
+                            printf("VOTANDO...\n");
+                            break;
+
+                        default:
+                            printf("Rota registada com sucesso!!!\n");
+                        }
+                    } while (decisao != 0);
                     break;
 
                 case 2:
@@ -395,6 +447,7 @@ int menuAdmin(Lista t[], Usuario u)
                     printf("╚══════════════════════════════════════════════════════════════╝\n");
                     printf(RESET);
                     printf("\n\n");
+                    listarRotas();
                     break;
                 case 3:
 

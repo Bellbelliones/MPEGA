@@ -19,7 +19,7 @@ int main()
 {
     Lista tabela[TAM];
     inicializarTabela(tabela);
-
+    inicializarGrafo();
     sessao(tabela);
     return 0;
 }

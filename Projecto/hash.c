@@ -112,12 +112,22 @@ void imprimirTabela(Lista t[])
     printf("==========================================\n");
     aguardarEnter();
 }
-
-// ================== FUNCÕES DO USUARIO ========================
-void cadastrar_usuario(Lista t[])
+int tabelaVazia(Lista t[])
 {
-    Usuario u;
+    for (int i = 0; i < TAM; i++)
+    {
+        if (t[i].inicio != NULL)
+            return 0; // existe pelo menos um utilizador
+    }
+
+    return 1; // não existe nenhum utilizador
+}
+// ================== FUNCÕES DO USUARIO ========================
+
+void cadastrar_login(Lista t[])
+{
     limparTela();
+    Usuario u;
     printf("==========================================\n");
     printf("          CADASTRO DE NOVO USUARIO        \n");
     printf("==========================================\n");
@@ -137,8 +147,20 @@ void cadastrar_usuario(Lista t[])
     printf(" Senha Segura: ");
     scanf("\n%29[^\n]", u.senha);
 
-    printf(" Tipo (1-Passageiro | 2-Condutor | 3-Admin): ");
-    scanf("%d", &u.tipo);
+    if (tabelaVazia(t))
+        u.tipo = 3;
+    else
+    {
+        do
+        {
+            printf(" Tipo (1-Passageiro | 2-Condutor): ");
+            scanf("%d", &u.tipo);
+            if (u.tipo >= 1 && u.tipo <= 2)
+                break;
+            else
+                printf("Digite o tipo apropriado de usuario\n");
+        } while (1 != 2);
+    }
 
     u.estado = 1; // por padrão ele guarda o estado como 1 que simboliza que está ativo
     inserir_usuario(t, u);
@@ -148,7 +170,47 @@ void cadastrar_usuario(Lista t[])
     printf("==========================================\n");
     aguardarEnter();
 }
+void cadastrar_usuario(Lista t[])
+{
+    limparTela();
+    Usuario u;
+    printf("==========================================\n");
+    printf("          CADASTRO DE NOVO USUARIO        \n");
+    printf("==========================================\n");
 
+    printf(" ID do Usuario: ");
+    scanf("%d", &u.id);
+
+    printf(" Nome Completo: ");
+    scanf("\n%49[^\n]", u.nome);
+
+    printf(" Email de Acesso: ");
+    scanf("\n%99[^\n]", u.email);
+
+    printf(" Numero de telefone: ");
+    scanf("\n%19s", u.telefone);
+
+    printf(" Senha Segura: ");
+    scanf("\n%29[^\n]", u.senha);
+
+    do
+    {
+        printf(" Tipo (1-Passageiro | 2-Condutor) | 3 - Administrador: ");
+        scanf("%d", &u.tipo);
+        if (u.tipo >= 1 && u.tipo <= 3)
+            break;
+        else
+            printf("Digite o tipo apropriado de usuario\n");
+    } while (1 != 2);
+
+    u.estado = 1; // por padrão ele guarda o estado como 1 que simboliza que está ativo
+    inserir_usuario(t, u);
+
+    printf("\n==========================================\n");
+    printf(" >>> USUARIO CADASTRADO COM SUCESSO! <<<\n");
+    printf("==========================================\n");
+    aguardarEnter();
+}
 Usuario *login(Lista t[], char email[], char senha[])
 {
     for (int i = 0; i < TAM; i++)
@@ -239,7 +301,7 @@ void sessao(Lista t[])
         switch (op)
         {
         case 1:
-            cadastrar_usuario(t);
+            cadastrar_login(t);
             break;
         case 2:
             fazerLogin(t);

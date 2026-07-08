@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "hash.h"
+#include "viagem.h"
 #include "grafo.h"
-#include "avl.h"
 
 // Definindo as cores
 #define RESET "\033[0m"
@@ -17,12 +18,12 @@
 
 int menuPassageiro(Usuario u)
 {
-    // ainda estamos a testar as funções fora da main
-    // antes de colocar aqui na main
-    int op = 0;
+    int op;
+
     do
     {
         limparTela();
+
         printf(CYAN);
         printf("Usuario: %s\n", u.nome);
         printf("╔══════════════════════════════════════════════════════════════╗\n");
@@ -33,9 +34,10 @@ int menuPassageiro(Usuario u)
         printf("╠══════════════════════════════════════════════════════════════╣\n");
         printf(RESET);
 
-        printf(CYAN "║" MAGENTA "  [1]" WHITE " Procurar Viajens                                        " CYAN "║\n" RESET);
-        printf(CYAN "║" MAGENTA "  [2]" WHITE " Cancelar Viagem                                         " CYAN "║\n" RESET);
-        printf(CYAN "║" MAGENTA "  [0]" WHITE " Sair                                                    " CYAN "║\n" RESET);
+        printf(CYAN "║" MAGENTA "  [1]" WHITE " Procurar Viagens                                       " CYAN "║\n" RESET);
+        printf(CYAN "║" MAGENTA "  [2]" WHITE " Reservar Lugar                                         " CYAN "║\n" RESET);
+        printf(CYAN "║" MAGENTA "  [3]" WHITE " Cancelar Reserva                                       " CYAN "║\n" RESET);
+        printf(CYAN "║" MAGENTA "  [0]" WHITE " Sair                                                   " CYAN "║\n" RESET);
 
         printf(CYAN);
         printf("╚══════════════════════════════════════════════════════════════╝\n");
@@ -43,39 +45,83 @@ int menuPassageiro(Usuario u)
 
         printf(MAGENTA "\n➜ Escolha uma opção: " RESET);
         scanf("%d", &op);
+
         switch (op)
         {
         case 1:
+        {
             printf(CYAN);
             printf("╔══════════════════════════════════════════════════════════════╗\n");
-            printf("║                         Procurar Viajens                      ║\n");
+            printf("║                     PROCURAR VIAGENS                        ║\n");
             printf("╚══════════════════════════════════════════════════════════════╝\n");
             printf(RESET);
 
-            aguardarEnter();
-            break;
-        case 2:
-            printf(CYAN);
-            printf("╔══════════════════════════════════════════════════════════════╗\n");
-            printf("║                         Cancelar Viagem                      ║\n");
-            printf("╚══════════════════════════════════════════════════════════════╝\n");
-            printf(RESET);
+            procurarViagem();
 
             aguardarEnter();
             break;
-        case 0:
-            printf("Saindo do sistema");
-            break;
-        default:
-            printf("Opcao selecionada invalida\n");
         }
+
+        case 2:
+        {
+            int idViagem;
+
+            printf(CYAN);
+            printf("╔══════════════════════════════════════════════════════════════╗\n");
+            printf("║                         RESERVAR LUGAR                       ║\n");
+            printf("╚══════════════════════════════════════════════════════════════╝\n");
+            printf(RESET);
+
+            listarViagens();
+
+            printf("\nID da Viagem: ");
+            scanf("%d", &idViagem);
+
+            reservarLugar(idViagem, u.id);
+
+            aguardarEnter();
+            break;
+        }
+
+        case 3:
+        {
+            int idViagem;
+
+            printf(CYAN);
+            printf("╔══════════════════════════════════════════════════════════════╗\n");
+            printf("║                    CANCELAR RESERVA                         ║\n");
+            printf("╚══════════════════════════════════════════════════════════════╝\n");
+            printf(RESET);
+
+            listarViagens();
+
+            printf("\nID da Viagem: ");
+            scanf("%d", &idViagem);
+
+            cancelarReserva(idViagem, u.id);
+
+            aguardarEnter();
+            break;
+        }
+
+        case 0:
+        {
+            printf("\nA sair...\n");
+            break;
+        }
+
+        default:
+        {
+            printf("\nOpção inválida!\n");
+            aguardarEnter();
+        }
+        }
+
     } while (op != 0);
 
-    printf("\n\n\n");
     return 0;
 }
-
-int menuCondutor(Usuario u)
+int menuCondutor(Lista t[], Usuario u)
 {
     // ainda estamos a testar as funções fora da main
     // antes de colocar aqui na main
@@ -92,11 +138,14 @@ int menuCondutor(Usuario u)
         printf("║                 Desenvolvido por: GRUPO 13                   ║\n");
         printf("╠══════════════════════════════════════════════════════════════╣\n");
         printf(RESET);
-
-        printf(CYAN "║" MAGENTA "  [1]" WHITE " Publicar Viagem                                         " CYAN "║\n" RESET);
-        printf(CYAN "║" MAGENTA "  [2]" WHITE " Cancelar Viavem                                         " CYAN "║\n" RESET);
-        printf(CYAN "║" MAGENTA "  [3]" WHITE " Consultar Melhor Rota para o Destino                    " CYAN "║\n" RESET);
-        printf(CYAN "║" MAGENTA "  [0]" WHITE " Sair                                                    " CYAN "║\n" RESET);
+        printf(CYAN "║" MAGENTA "  [1]" WHITE " Publicar Nova Viagem                                   " CYAN "║\n" RESET);
+        printf(CYAN "║" MAGENTA "  [2]" WHITE " Listar Minhas Viagens                                  " CYAN "║\n" RESET);
+        printf(CYAN "║" MAGENTA "  [3]" WHITE " Ver Passageiros de uma Viagem                          " CYAN "║\n" RESET);
+        printf(CYAN "║" MAGENTA "  [4]" WHITE " Iniciar Viagem                                         " CYAN "║\n" RESET);
+        printf(CYAN "║" MAGENTA "  [5]" WHITE " Terminar Viagem                                        " CYAN "║\n" RESET);
+        printf(CYAN "║" MAGENTA "  [6]" WHITE " Cancelar / Remover Viagem                              " CYAN "║\n" RESET);
+        printf(CYAN "║" MAGENTA "  [7]" WHITE " Consultar Melhor Rota                                  " CYAN "║\n" RESET);
+        printf(CYAN "║" MAGENTA "  [0]" WHITE " Sair                                                   " CYAN "║\n" RESET);
 
         printf(CYAN);
         printf("╚══════════════════════════════════════════════════════════════╝\n");
@@ -107,32 +156,133 @@ int menuCondutor(Usuario u)
         switch (op)
         {
         case 1:
-            printf(CYAN);
-            printf("╔══════════════════════════════════════════════════════════════╗\n");
-            printf("║                         Publicar Viagem                      ║\n");
-            printf("╚══════════════════════════════════════════════════════════════╝\n");
-            printf(RESET);
+        {
+            Viagem v;
+
+            limparTela();
+
+            printf("=========== PUBLICAR VIAGEM ===========\n\n");
+
+            printf("ID da Viagem: ");
+            scanf("%d", &v.idViagem);
+
+            v.idMotorista = u.id;
+
+            printf("ID do Veículo: ");
+            scanf("%d", &v.idVeiculo);
+
+            printf("Cidade de Origem: ");
+            scanf(" %49[^\n]", v.cidadeOrigem);
+
+            printf("Cidade de Destino: ");
+            scanf(" %49[^\n]", v.cidadeDestino);
+
+            printf("Distância: ");
+            scanf("%d", &v.distancia);
+
+            printf("Tempo Estimado: ");
+            scanf("%d", &v.tempoEstimado);
+
+            printf("Preço: ");
+            scanf("%f", &v.precoEstimado);
+
+            printf("Lugares Disponíveis: ");
+            scanf("%d", &v.lugaresDisponiveis);
+
+            strcpy(v.estado, "Disponível");
+
+            v.listaPassageiros = NULL;
+
+            publicarViagem(v);
 
             aguardarEnter();
+
             break;
+        }
         case 2:
-            printf(CYAN);
-            printf("╔══════════════════════════════════════════════════════════════╗\n");
-            printf("║                         Cancelar Viagem                      ║\n");
-            printf("╚══════════════════════════════════════════════════════════════╝\n");
-            printf(RESET);
+
+            listarMinhasViagens(u.id);
 
             aguardarEnter();
+
             break;
         case 3:
-            printf(CYAN);
-            printf("╔══════════════════════════════════════════════════════════════╗\n");
-            printf("║            Consultar Melhor Rota para o Destino              ║\n");
-            printf("╚══════════════════════════════════════════════════════════════╝\n");
-            printf(RESET);
+        {
+            int idViagem;
+
+            listarMinhasViagens(u.id);
+
+            printf("\nID da Viagem: ");
+            scanf("%d", &idViagem);
+
+            listarPassageiros(t, idViagem);
 
             aguardarEnter();
+
             break;
+        }
+        case 4:
+        {
+            int id;
+
+            listarMinhasViagens(u.id);
+
+            printf("\nID da Viagem: ");
+            scanf("%d", &id);
+
+            iniciarViagem(id);
+
+            aguardarEnter();
+
+            break;
+        }
+        case 5:
+        {
+            int id;
+
+            listarMinhasViagens(u.id);
+
+            printf("\nID da Viagem: ");
+            scanf("%d", &id);
+
+            terminarViagem(id);
+
+            aguardarEnter();
+
+            break;
+        }
+        case 6:
+        {
+            int id;
+
+            listarMinhasViagens(u.id);
+
+            printf("\nID da Viagem: ");
+            scanf("%d", &id);
+
+            removerViagem(id);
+
+            aguardarEnter();
+
+            break;
+        }
+        case 7:
+        {
+            char origem[MAX_NOME];
+            char destino[MAX_NOME];
+
+            printf("\nOrigem: ");
+            scanf(" %49[^\n]", origem);
+
+            printf("Destino: ");
+            scanf(" %49[^\n]", destino);
+
+            dijkstra(origem, destino);
+
+            aguardarEnter();
+
+            break;
+        }
         case 0:
             printf(CYAN);
             printf("╔══════════════════════════════════════════════════════════════╗\n");
@@ -151,12 +301,15 @@ int menuCondutor(Usuario u)
 int menuAdmin(Lista t[], Usuario u)
 {
 
-        // ainda estamos a testar as funções fora da main
+    // ainda estamos a testar as funções fora da main
     // antes de colocar aqui na main
 
     char n[30], e[30], tel[15], s[30];
     int id = 0, acesso = 0;
 
+    char origem[50];
+    char destino[50];
+    char estado[30];
     int op = 0;
     int escolha = 0;
     int decisao = 0;
@@ -365,11 +518,11 @@ int menuAdmin(Lista t[], Usuario u)
                 printf(RESET);
 
                 printf(CYAN "║" MAGENTA "  [1]" WHITE " Registar                                                " CYAN "║\n" RESET);
-                printf(CYAN "║" MAGENTA "  [2]" WHITE " Vizualizar Rotas                                        " CYAN "║\n" RESET);
-                printf(CYAN "║" MAGENTA "  [3]" WHITE " Atualizar / Editar                                      " CYAN "║\n" RESET);
-                printf(CYAN "║" MAGENTA "  [4]" WHITE " Consultar Melhor Rota                                   " CYAN "║\n" RESET);
+                printf(CYAN "║" MAGENTA "  [2]" WHITE " Vizualizar                                              " CYAN "║\n" RESET);
+                printf(CYAN "║" MAGENTA "  [3]" WHITE " Atualizar Estado Da Rota                                " CYAN "║\n" RESET);
+                printf(CYAN "║" MAGENTA "  [4]" WHITE " Consultar Melhor Caminho                                " CYAN "║\n" RESET);
                 printf(CYAN "║" MAGENTA "  [5]" WHITE " Remover                                                 " CYAN "║\n" RESET);
-                printf(CYAN "║" MAGENTA "  [0]" WHITE " Sair                                                    " CYAN "║\n" RESET);
+                printf(CYAN "║" MAGENTA "  [0]" WHITE " Voltar                                                  " CYAN "║\n" RESET);
 
                 printf(CYAN);
                 printf("╚══════════════════════════════════════════════════════════════╝\n");
@@ -388,8 +541,8 @@ int menuAdmin(Lista t[], Usuario u)
                         printf("╠══════════════════════════════════════════════════════════════╣\n");
                         printf(RESET);
 
-                        printf(CYAN "║" MAGENTA "  [1]" WHITE " Rotas                                                   " CYAN "║\n" RESET);
-                        printf(CYAN "║" MAGENTA "  [2]" WHITE " Cidade                                                  " CYAN "║\n" RESET);
+                        printf(CYAN "║" MAGENTA "  [1]" WHITE " Cidade                                                  " CYAN "║\n" RESET);
+                        printf(CYAN "║" MAGENTA "  [2]" WHITE " Rotas                                                   " CYAN "║\n" RESET);
                         printf(CYAN "║" MAGENTA "  [0]" WHITE " Voltar                                                  " CYAN "║\n" RESET);
 
                         printf(CYAN);
@@ -400,16 +553,47 @@ int menuAdmin(Lista t[], Usuario u)
                         switch (decisao)
                         {
                         case 1:
+                            Cidade c;
+
+                            limparTela();
+
+                            printf(CYAN);
+                            printf("╔══════════════════════════════════════════════════════════════╗\n");
+                            printf("║                  REGISTO DE CIDADE                          ║\n");
+                            printf("╚══════════════════════════════════════════════════════════════╝\n");
+                            printf(RESET);
+
+                            printf("\nCódigo da Cidade: ");
+                            scanf("%d", &c.idCidade);
+
+                            getchar(); // limpa o ENTER do scanf
+
+                            printf("Nome da Cidade: ");
+                            scanf("\n%49[^\n]", c.nome);
+
+                            if (adicionarCidade(c))
+                                printf(GREEN "\nCidade registada com sucesso!\n" RESET);
+                            else
+                                printf(RED "\nNão foi possível registar a cidade.\n" RESET);
+
+                            break;
+
+                        case 2:
                             Rota r;
 
+                            printf(CYAN);
+                            printf("╔══════════════════════════════════════════════════════════════╗\n");
+                            printf("║                    REGISTO DE ROTAS                          ║\n");
+                            printf("╚══════════════════════════════════════════════════════════════╝\n");
+                            printf(RESET);
                             printf("ID Rota: ");
-                            scanf("%d", &r.idRota);
+                            scanf("\n%[^\n]", r.idRota);
 
                             printf("Origem: ");
-                            scanf("%d", &r.origem);
+                            scanf("\n%[^\n]", r.origem);
 
                             printf("Destino: ");
-                            scanf("%d", &r.destino);
+                            scanf("\n%[^\n]", r.destino);
 
                             printf("Distancia: ");
                             scanf("%d", &r.distancia);
@@ -417,15 +601,10 @@ int menuAdmin(Lista t[], Usuario u)
                             printf("Tempo: ");
                             scanf("%d", &r.tempoEstimado);
 
-                            printf("Estado: ");
-                            scanf(" %[^\n]", r.estadoVia);
+                            printf("Estado: ( Boa, Razoável, Má, Interditada): ");
+                            scanf(" \n%[^\n]", r.estadoVia);
 
                             adicionarRota(r);
-                            break;
-
-                        case 2:
-
-                            printf("Rota registada com sucesso\n");
                             break;
 
                         case 0:
@@ -440,41 +619,165 @@ int menuAdmin(Lista t[], Usuario u)
                     break;
 
                 case 2:
+                    do
+                    {
+                        printf(CYAN);
+                        printf("╔══════════════════════════════════════════════════════════════╗\n");
+                        printf("║                         Vizualização                         ║\n");
+                        printf("╠══════════════════════════════════════════════════════════════╣\n");
+                        printf(RESET);
 
-                    printf(CYAN);
-                    printf("╔══════════════════════════════════════════════════════════════╗\n");
-                    printf("║                     Vizualização de Rotas                    ║\n");
-                    printf("╚══════════════════════════════════════════════════════════════╝\n");
-                    printf(RESET);
-                    printf("\n\n");
-                    listarRotas();
+                        printf(CYAN "║" MAGENTA "  [1]" WHITE " Cidade                                                  " CYAN "║\n" RESET);
+                        printf(CYAN "║" MAGENTA "  [2]" WHITE " Rotas                                                   " CYAN "║\n" RESET);
+                        printf(CYAN "║" MAGENTA "  [0]" WHITE " Voltar                                                  " CYAN "║\n" RESET);
+
+                        printf(CYAN);
+                        printf("╚══════════════════════════════════════════════════════════════╝\n");
+                        printf(RESET);
+                        printf("\n\n");
+                        scanf("%d", &decisao);
+                        switch (decisao)
+                        {
+                        case 1:
+
+                            printf(CYAN);
+                            printf("╔══════════════════════════════════════════════════════════════╗\n");
+                            printf("║                    LISTAGEM DE CIDADE                        ║\n");
+                            printf("╚══════════════════════════════════════════════════════════════╝\n");
+                            printf(RESET);
+                            listarCidades();
+                            break;
+                        case 2:
+
+                            printf(CYAN);
+                            printf("╔══════════════════════════════════════════════════════════════╗\n");
+                            printf("║                    LISTAGEM DE ROTA                          ║\n");
+                            printf("╚══════════════════════════════════════════════════════════════╝\n");
+                            printf(RESET);
+                            listarRotas();
+                            break;
+
+                        default:
+                            break;
+                        }
+                    } while (decisao != 0);
                     break;
                 case 3:
 
+                    limparTela();
+
                     printf(CYAN);
                     printf("╔══════════════════════════════════════════════════════════════╗\n");
-                    printf("║                  Atualização / Edição de Rotas               ║\n");
+                    printf("║                 ATUALIZAR ESTADO DA VIA                     ║\n");
                     printf("╚══════════════════════════════════════════════════════════════╝\n");
                     printf(RESET);
-                    printf("\n\n");
+
+                    listarRotas();
+
+                    printf("\nOrigem: ");
+                    scanf("\n%49[^\n]", origem);
+
+                    printf("Destino: ");
+                    scanf("\n%49[^\n]", destino);
+
+                    printf("\nEstados disponíveis:\n");
+                    printf(" - Boa\n");
+                    printf(" - Razoável\n");
+                    printf(" - Má\n");
+                    printf(" - Interditada\n");
+
+                    printf("\nNovo Estado: ");
+                    scanf("\n%29[^\n]", estado);
+
+                    atualizarEstadoVia(origem, destino, estado);
                     break;
                 case 4:
 
                     printf(CYAN);
                     printf("╔══════════════════════════════════════════════════════════════╗\n");
-                    printf("║                       Consultar Melhor Rota                  ║\n");
-                    printf("╚══════════════════════════════════════════════════════════════╝\n");
-                    printf(RESET);
-                    printf("\n\n");
+                    printf("║                         MELHOR CAMINHO                       ║\n");
+                    printf("╠══════════════════════════════════════════════════════════════╣\n");
+                    printf("Cidade de Origem: ");
+                    scanf(" %49[^\n]", origem);
+
+                    printf("Cidade de Destino: ");
+                    scanf(" %49[^\n]", destino);
+
+                    dijkstra(origem, destino);
+
+                    break;
                     break;
                 case 5:
+                    do
+                    {
+                        printf(CYAN);
+                        printf("╔══════════════════════════════════════════════════════════════╗\n");
+                        printf("║                          REMOÇÂO                             ║\n");
+                        printf("╠══════════════════════════════════════════════════════════════╣\n");
+                        printf(RESET);
 
-                    printf(CYAN);
-                    printf("╔══════════════════════════════════════════════════════════════╗\n");
-                    printf("║                          Remoção de Rotas                    ║\n");
-                    printf("╚══════════════════════════════════════════════════════════════╝\n");
-                    printf(RESET);
-                    printf("\n\n");
+                        printf(CYAN "║" MAGENTA "  [1]" WHITE " Cidade                                                  " CYAN "║\n" RESET);
+                        printf(CYAN "║" MAGENTA "  [2]" WHITE " Rotas                                                   " CYAN "║\n" RESET);
+                        printf(CYAN "║" MAGENTA "  [0]" WHITE " Voltar                                                  " CYAN "║\n" RESET);
+
+                        printf(CYAN);
+                        printf("╚══════════════════════════════════════════════════════════════╝\n");
+                        printf(RESET);
+                        printf("\n\n");
+                        scanf("%d", &decisao);
+                        switch (decisao)
+                        {
+                        case 1:
+
+                            int idCidade;
+
+                            limparTela();
+
+                            printf(CYAN);
+                            printf("╔══════════════════════════════════════════════╗\n");
+                            printf("║             REMOVER CIDADE                   ║\n");
+                            printf("╚══════════════════════════════════════════════╝\n");
+                            printf(RESET);
+
+                            listarCidades();
+
+                            printf("\nCódigo da Cidade: ");
+                            scanf("%d", &idCidade);
+
+                            if (removerCidade(idCidade))
+                                ;
+                            else
+                                printf(RED "\nNão foi possível remover a cidade.\n" RESET);
+
+                            break;
+                        case 2:
+
+                            limparTela();
+
+                            printf(CYAN);
+                            printf("╔══════════════════════════════════════════════╗\n");
+                            printf("║              REMOVER ROTA                    ║\n");
+                            printf("╚══════════════════════════════════════════════╝\n");
+                            printf(RESET);
+
+                            listarRotas();
+
+                            printf("\nOrigem: ");
+                            scanf("\n%49[^\n]", origem);
+
+                            printf("Destino: ");
+                            scanf("\n%49[^\n]", destino);
+
+                            if (removerRota(origem, destino))
+                                printf(GREEN "\nRota removida com sucesso!\n" RESET);
+                            else
+                                printf(RED "\nRota não encontrada.\n" RESET);
+                            break;
+
+                        default:
+                            break;
+                        }
+                    } while (decisao != 0);
                     break;
                 case 0:
 

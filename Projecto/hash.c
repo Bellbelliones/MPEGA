@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "ficheiros.h"
 #include "dashboard.h"
 #include "hash.h"
 
@@ -69,7 +70,7 @@ int atualizarUsuario(Lista t[], int id, char *nome, char *telemovel, char *email
     strcpy(encontrado->user.email, email);
     strcpy(encontrado->user.senha, senha);
     encontrado->user.tipo = acesso;
-
+    guardarUsuarios(t);
     return 0; // Significa sucesso
 }
 int removerUsuario(Lista t[], int id)
@@ -87,11 +88,13 @@ int bloquearDesbloquearUsuario(Lista t[], int id)
     if (encontrado->user.estado == 0)
     {
         encontrado->user.estado = 1;
+        guardarUsuarios(t);
         return 1; // foi desbloquado
     }
     else
     {
         encontrado->user.estado = 0;
+        guardarUsuarios(t);
         return 2; // foi bloquado
     }
 }
@@ -124,16 +127,41 @@ int tabelaVazia(Lista t[])
 }
 // ================== FUNCÕES DO USUARIO ========================
 
+// Gera o id automatico olhando para  a lista
+int gerarID(Lista t[])
+{
+    int maiorID = 0;
+
+    for (int i = 0; i < TAM; i++)
+    {
+        No *aux = t[i].inicio;
+
+        while (aux != NULL)
+        {
+            if (aux->user.id > maiorID)
+            {
+                maiorID = aux->user.id;
+            }
+
+            aux = aux->prox;
+        }
+    }
+
+    return maiorID + 1;
+}
 void cadastrar_login(Lista t[])
 {
     limparTela();
     Usuario u;
-    printf("==========================================\n");
-    printf("          CADASTRO DE NOVO USUARIO        \n");
-    printf("==========================================\n");
 
-    printf(" ID do Usuario: ");
-    scanf("%d", &u.id);
+    printf(CYAN);
+    printf("╔══════════════════════════════════════════════════════════════╗\n");
+    printf("║                   CADASTRO DE NOVO USUARIO                   ║\n");
+    printf("╚══════════════════════════════════════════════════════════════╝\n");
+    printf(RESET);
+    u.id = gerarID(t);
+
+    printf(" ID Gerado: %d\n", u.id);
 
     printf(" Nome Completo: ");
     scanf("\n%49[^\n]", u.nome);
@@ -164,7 +192,7 @@ void cadastrar_login(Lista t[])
 
     u.estado = 1; // por padrão ele guarda o estado como 1 que simboliza que está ativo
     inserir_usuario(t, u);
-
+    guardarUsuarios(t);
     printf("\n==========================================\n");
     printf(" >>> USUARIO CADASTRADO COM SUCESSO! <<<\n");
     printf("==========================================\n");
@@ -177,9 +205,9 @@ void cadastrar_usuario(Lista t[])
     printf("==========================================\n");
     printf("          CADASTRO DE NOVO USUARIO        \n");
     printf("==========================================\n");
+    u.id = gerarID(t);
 
-    printf(" ID do Usuario: ");
-    scanf("%d", &u.id);
+    printf(" ID Gerado: %d\n", u.id);
 
     printf(" Nome Completo: ");
     scanf("\n%49[^\n]", u.nome);
@@ -205,7 +233,7 @@ void cadastrar_usuario(Lista t[])
 
     u.estado = 1; // por padrão ele guarda o estado como 1 que simboliza que está ativo
     inserir_usuario(t, u);
-
+    guardarUsuarios(t);
     printf("\n==========================================\n");
     printf(" >>> USUARIO CADASTRADO COM SUCESSO! <<<\n");
     printf("==========================================\n");
@@ -235,9 +263,12 @@ void fazerLogin(Lista t[])
     char senha[30];
 
     limparTela();
-    printf("==========================================\n");
-    printf("         AUTENTICACAO DE USUARIO          \n");
-    printf("==========================================\n");
+
+    printf(CYAN);
+    printf("╔══════════════════════════════════════════════════════════════╗\n");
+    printf("║                   AUTENTICACAO DE USUARIO                    ║\n");
+    printf("╚══════════════════════════════════════════════════════════════╝\n");
+    printf(RESET);
 
     printf(" Digite seu Email: ");
     scanf("%99s", email);
@@ -268,7 +299,7 @@ void fazerLogin(Lista t[])
         menuPassageiro(*u);
         break;
     case 2:
-        menuCondutor(*u);
+        menuCondutor(t, *u);
         break;
     case 3:
         menuAdmin(t, *u);
@@ -287,14 +318,24 @@ void sessao(Lista t[])
     do
     {
         limparTela();
-        printf("==========================================\n");
-        printf("          SISTEMA DE VIAGENS MPEGA        \n");
-        printf("==========================================\n");
-        printf(" [1] Criar Nova Conta (Cadastrar)\n");
-        printf(" [2] Entrar no Sistema (Login)\n");
-        printf(" [0] Fechar Aplicativo (Sair)\n");
-        printf("------------------------------------------\n");
-        printf(" Escolha uma opcao: ");
+        printf(CYAN);
+        printf("╔══════════════════════════════════════════════════════════════╗\n");
+        printf("║                              MPEGA                           ║\n");
+        printf("║            Sistema Inteligente de Partilha de Viagens        ║\n");
+        printf("╠══════════════════════════════════════════════════════════════╣\n");
+        printf(RESET);
+
+        printf(CYAN "║" MAGENTA "  [1]" WHITE " Criar Nova Conta (Cadastrar)                            " CYAN "║\n" RESET);
+        printf(CYAN "║" MAGENTA "  [2]" WHITE " Entrar no Sistema (Login)                               " CYAN "║\n" RESET);
+        printf(CYAN "║" MAGENTA "  [0]" WHITE " Fechar Aplicativo (Sair)                                " CYAN "║\n" RESET);
+
+        printf(CYAN);
+        printf("╠══════════════════════════════════════════════════════════════╣\n");
+        printf("║" YELLOW "               Bem-vindo ao Sistema MPEGA                     " CYAN "║\n");
+        printf("╚══════════════════════════════════════════════════════════════╝\n");
+        printf(RESET);
+
+        printf(MAGENTA "\n➜ Escolha uma opção: " RESET);
 
         scanf("%d", &op);
 
@@ -308,9 +349,12 @@ void sessao(Lista t[])
             break;
         case 0:
             limparTela();
-            printf("==========================================\n");
-            printf("  Obrigado por usar o MPEGA. Ate a proxima! \n");
-            printf("==========================================\n");
+            printf(CYAN);
+            printf("╔══════════════════════════════════════════════════════════════╗\n");
+            printf("║" GREEN "                Obrigado por usar o MPEGA!                    " CYAN "║\n");
+            printf("║" WHITE "                     Até à próxima!                           " CYAN "║\n");
+            printf("╚══════════════════════════════════════════════════════════════╝\n");
+            printf(RESET);
             break;
         default:
             printf("\nOpcao invalida! Pressione qualquer tecla para tentar...");

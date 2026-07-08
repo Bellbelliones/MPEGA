@@ -1,27 +1,27 @@
-#ifndef ficheiros_h
-#define ficheiros_h
+#ifndef FICHEIROS_H
+#define FICHEIROS_H
 
 #include "tipos.h"
-void menuGrafos();
+#include "hash.h"
 
-/* MOTORISTAS */
-int guardarMotorista(Motorista motorista);
-int existeMotorista(int idMotorista);
+/* Utilizadores */
+void guardarUsuarios(Lista t[]);
+void carregarUsuarios(Lista t[]);
 
-/* VEICULOS */
-int guardarVeiculo(Veiculo veiculo);
-int existeMatricula(char matricula[]);
-void atualizarEstadoVeiculo(Veiculo *veiculo);
+/* Cidades */
+void guardarCidades();
+void carregarCidades();
 
-/* CIDADES */
-int guardarCidade(Cidade cidade);
-int existeCidadeFicheiro(int idCidade);
+/* Rotas */
+void guardarRotas();
+void carregarRotas();
 
-/* ROTAS */
-int guardarRota(Rota rota);
-int existeRotaFicheiro(int idRota);
+/* Viagens */
+void guardarViagens();
+void carregarViagens();
 
-/* VIAGENS */
-int guardarViagem(Viagem viagem);
+/*Reserva de viagens*/
+void guardarReservas();
+void carregarReservas();
 
 #endif

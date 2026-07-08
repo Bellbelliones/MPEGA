@@ -1,188 +1,272 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "ficheiros.h"
+#include "hash.h"
+#include "grafo.h"
+#include "viagem.h"
 
-//existeMotorista()//
-
-int existeMotorista(int idMotorista)
+// funcoes de usuario
+void guardarUsuarios(Lista t[])
 {
-    FILE *f;
+    FILE *fp = fopen("usuarios.txt", "w");
 
-    Motorista motorista;
+    if (fp == NULL)
+        return;
 
-    f=fopen("motoristas.dat","rb");
-
-    if(f==NULL)
+    for (int i = 0; i < TAM; i++)
     {
-        return 0;
-    }
+        No *aux = t[i].inicio;
 
-    while(fread(&motorista,sizeof(Motorista),1,f))
-    {
-        if(motorista.idMotorista==idMotorista)
+        while (aux != NULL)
         {
-            fclose(f);
-            return 1;
+            fprintf(fp,
+                    "%d;%s;%s;%s;%s;%d;%d\n",
+                    aux->user.id,
+                    aux->user.nome,
+                    aux->user.telefone,
+                    aux->user.email,
+                    aux->user.senha,
+                    aux->user.tipo,
+                    aux->user.estado);
+
+            aux = aux->prox;
         }
     }
 
-    fclose(f);
-
-    return 0;
+    fclose(fp);
 }
-
-// GuardarMotorista//
-
-int guardarMotorista(Motorista motorista)
+void carregarUsuarios(Lista t[])
 {
+    FILE *fp = fopen("usuarios.txt", "r");
 
-    FILE *f;
+    if (fp == NULL)
+        return;
 
-    if(motorista.idMotorista<=0)
+    Usuario u;
+
+    while (fscanf(fp,
+                  "%d;%49[^;];%19[^;];%99[^;];%29[^;];%d;%d\n",
+                  &u.id,
+                  u.nome,
+                  u.telefone,
+                  u.email,
+                  u.senha,
+                  &u.tipo,
+                  &u.estado) == 7)
     {
-        printf("Erro: ID inválido.\n");
-        return 0;
+        inserir_usuario(t, u);
     }
 
-    if(strlen(motorista.nome)==0)
-    {
-        printf("Erro: Nome obrigatório.\n");
-        return 0;
-    }
-
-    if(strlen(motorista.BI)==0)
-    {
-        printf("Erro: BI obrigatório.\n");
-        return 0;
-    }
-
-    if(strlen(motorista.telefone)==0)
-    {
-        printf("Erro: Telefone obrigatório.\n");
-        return 0;
-    }
-
-    if(existeMotorista(motorista.idMotorista))
-    {
-        printf("Erro: Motorista já cadastrado.\n");
-        return 0;
-    }
-
-    f=fopen("motoristas.dat","ab");
-
-    if(f==NULL)
-    {
-        printf("Erro ao abrir ficheiro.\n");
-        return 0;
-    }
-
-    fwrite(&motorista,sizeof(Motorista),1,f);
-
-    fclose(f);
-
-    printf("Motorista guardado com sucesso.\n");
-
-    return 1;
-
+    fclose(fp);
 }
+// Funcoes das cidades, rotas e viagens
 
-// ExisteMatricula//
-
-
-int existeMatricula(char matricula[])
+void guardarCidades()
 {
+    FILE *fp = fopen("cidades.txt", "w");
 
-    FILE *f;
+    if (fp == NULL)
+        return;
 
-    Veiculo veiculo;
-
-    f=fopen("veiculos.dat","rb");
-
-    if(f==NULL)
+    for (int i = 0; i < totalCidades; i++)
     {
-        return 0;
+        fprintf(fp, "%d;%s\n",
+                cidades[i].idCidade,
+                cidades[i].nome);
     }
 
-    while(fread(&veiculo,sizeof(Veiculo),1,f))
+    fclose(fp);
+}
+void carregarCidades()
+{
+    FILE *fp = fopen("cidades.txt", "r");
+
+    if (fp == NULL)
+        return;
+
+    totalCidades = 0;
+
+    while (fscanf(fp, "%d;%49[^;\n]\n",
+                  &cidades[totalCidades].idCidade,
+                  cidades[totalCidades].nome) == 2)
     {
-        if(strcmp(veiculo.matricula,matricula)==0)
+        totalCidades++;
+    }
+
+    fclose(fp);
+}
+void guardarRotas()
+{
+    FILE *fp = fopen("rotas.txt", "w");
+
+    if (fp == NULL)
+        return;
+
+    for (int i = 0; i < totalRotas; i++)
+    {
+        fprintf(fp,
+                "%s;%s;%s;%d;%d;%s\n",
+                rotas[i].idRota,
+                rotas[i].origem,
+                rotas[i].destino,
+                rotas[i].distancia,
+                rotas[i].tempoEstimado,
+                rotas[i].estadoVia);
+    }
+
+    fclose(fp);
+}
+void carregarRotas()
+{
+    FILE *fp = fopen("rotas.txt", "r");
+
+    if (fp == NULL)
+        return;
+
+    totalRotas = 0;
+
+    while (fscanf(fp,
+                  "%19[^;];%49[^;];%49[^;];%d;%d;%199[^\n]\n",
+                  rotas[totalRotas].idRota,
+                  rotas[totalRotas].origem,
+                  rotas[totalRotas].destino,
+                  &rotas[totalRotas].distancia,
+                  &rotas[totalRotas].tempoEstimado,
+                  rotas[totalRotas].estadoVia) == 6)
+    {
+        totalRotas++;
+    }
+
+    fclose(fp);
+
+    /* RECONSTRÓI O GRAFO */
+
+    inicializarGrafo();
+
+    for (int i = 0; i < totalRotas; i++)
+    {
+        int origem = procurarCidadePorNome(rotas[i].origem);
+
+        int destino = procurarCidadePorNome(rotas[i].destino);
+
+        if (origem != -1 && destino != -1)
         {
-            fclose(f);
-            return 1;
+            matriz[origem][destino] = rotas[i].distancia;
+        }
+    }
+}
+
+// PARA CONTROLE DE VIAGENS
+void guardarViagens()
+{
+    FILE *fp = fopen("viagens.txt", "w");
+
+    if (fp == NULL)
+        return;
+
+    for (int i = 0; i < totalViagens; i++)
+    {
+        fprintf(fp,
+                "%d;%d;%d;%s;%s;%d;%d;%.2f;%d;%s\n",
+                viagens[i].idViagem,
+                viagens[i].idMotorista,
+                viagens[i].idVeiculo,
+                viagens[i].cidadeOrigem,
+                viagens[i].cidadeDestino,
+                viagens[i].distancia,
+                viagens[i].tempoEstimado,
+                viagens[i].precoEstimado,
+                viagens[i].lugaresDisponiveis,
+                viagens[i].estado);
+    }
+
+    fclose(fp);
+}
+void carregarViagens()
+{
+    FILE *fp = fopen("viagens.txt", "r");
+
+    if (fp == NULL)
+        return;
+
+    totalViagens = 0;
+
+    while (fscanf(fp,
+                  "%d;%d;%d;%49[^;];%49[^;];%d;%d;%f;%d;%199[^\n]\n",
+                  &viagens[totalViagens].idViagem,
+                  &viagens[totalViagens].idMotorista,
+                  &viagens[totalViagens].idVeiculo,
+                  viagens[totalViagens].cidadeOrigem,
+                  viagens[totalViagens].cidadeDestino,
+                  &viagens[totalViagens].distancia,
+                  &viagens[totalViagens].tempoEstimado,
+                  &viagens[totalViagens].precoEstimado,
+                  &viagens[totalViagens].lugaresDisponiveis,
+                  viagens[totalViagens].estado) == 10)
+    {
+        viagens[totalViagens].listaPassageiros = NULL;
+        totalViagens++;
+    }
+
+    fclose(fp);
+}
+/*Reserva de viagens*/
+void guardarReservas()
+{
+    FILE *fp = fopen("reservas.txt", "w");
+
+    if (fp == NULL)
+        return;
+
+    for (int i = 0; i < totalViagens; i++)
+    {
+        NoPassageiro *aux = viagens[i].listaPassageiros;
+
+        while (aux != NULL)
+        {
+            fprintf(fp, "%d;%d\n",
+                    viagens[i].idViagem,
+                    aux->idPassageiro);
+
+            aux = aux->prox;
         }
     }
 
-    fclose(f);
-
-    return 0;
-
+    fclose(fp);
 }
-
-// Guardar veículo//
-
-
-
-
-int guardarVeiculo(Veiculo v)
+void carregarReservas()
 {
-    FILE *f;
+    FILE *fp = fopen("reservas.txt", "r");
 
-    if(v.capacidade <= 0)
-        return 0;
+    if (fp == NULL)
+        return;
 
-    if(v.lugaresDisponiveis >
-       v.capacidade)
-        return 0;
+    int idViagem;
+    int idPassageiro;
 
-    if(existeMatricula(v.matricula))
-        return 0;
+    while (fscanf(fp, "%d;%d\n",
+                  &idViagem,
+                  &idPassageiro) == 2)
+    {
+        Viagem *v = buscarViagem(idViagem);
 
-    atualizarEstadoVeiculo(&v);
+        if (v != NULL)
+        {
+            NoPassageiro *novo =
+                (NoPassageiro *)malloc(sizeof(NoPassageiro));
 
-    f = fopen("veiculos.dat","ab");
+            if (novo != NULL)
+            {
+                novo->idPassageiro = idPassageiro;
 
-    if(f == NULL)
-        return 0;
+                novo->prox = v->listaPassageiros;
 
-    fwrite(&v,
-           sizeof(Veiculo),
-           1,
-           f);
+                v->listaPassageiros = novo;
+            }
+        }
+    }
 
-    fclose(f);
-
-    return 1;
+    fclose(fp);
 }
-
-void atualizarEstadoVeiculo(Veiculo *veiculo)
-{
-
-    if(veiculo->lugaresDisponiveis==0)
-    {
-        strcpy(veiculo->estado,"Cheio");
-    }
-
-    else if(veiculo->lugaresDisponiveis<=2)
-    {
-        strcpy(veiculo->estado,"Quase Lotado");
-    }
-
-    else if(veiculo->lugaresDisponiveis==veiculo->capacidade)
-    {
-        strcpy(veiculo->estado,"Vazio");
-    }
-
-    else
-    {
-        strcpy(veiculo->estado,"Disponível");
-    }
-
-
-    
-
-}
-
-
-
-

@@ -1,247 +1,244 @@
-<h1 align="center"> MPega </h1>
+# <h1 align="center">MPEGA</h1>
 
-<h2 align="center">  Sistema Inteligente de Partilha de Viagens</h2>
+<h3 align="center">
+Sistema Inteligente de Partilha de Viagens
+</h3>
 
----
-
-## **INTEGRANTES**
-
-- **Briane Vicente** : 2023 - 2111;
-- **Delfina Ramos** : 2023 - 0596;
-- **Rodolfo Guzman** : 2023 - 0090;
+<p align="center">
+Projeto desenvolvido no âmbito da disciplina de <strong>Estruturas de Dados II</strong>
+</p>
 
 ---
 
-## **Sobre o Projeto**
+# Integrantes
 
-O sistema consiste numa plataforma de intermediação de boleias que permite a publicação e gestão de viagens por parte dos motoristas e a pesquisa e reserva dessas viagens por parte dos passageiros. Diferentemente dos serviços tradicionais de transporte sob demanda, o destino da viagem é previamente definido pelo motorista, cabendo ao passageiro selecionar uma rota já existente que satisfaça as suas necessidades de deslocação. O objetivo é otimizar a ocupação dos veículos, reduzir custos de transporte, diminuir o número de automóveis em circulação e incentivar a mobilidade partilhada.
-
----
-
-## **Funcionalidades**
-
-O presente sistema possui as seguintes funcionalidades:
-
-- Registar Usuários;
-- Registar Vias;
-- Iniciar viagem;
-- ...;
+- **Briana Vicente** — 2023-2111
+- **Delfina Ramos** — 2023-0596
+- **Rodolfo Guzman** — 2023-0090
 
 ---
 
-## **Tecnologias**
+# Sobre o Projeto
 
-- Linguagem C;
+O **MPEGA** é uma aplicação de consola desenvolvida em linguagem **C** que tem como objetivo facilitar a partilha de viagens entre condutores e passageiros.
 
----
+O sistema permite o registo e autenticação de utilizadores, gestão de cidades e rotas, publicação de viagens, reservas de lugares e consulta do melhor percurso entre duas cidades através do algoritmo de **Dijkstra**.
 
-## **Estrutura de Dados**
-
-- Listas Ligadas
-- Tabelas Hash
-- Árvores AVL
-- Grafos
-- Filas
+Toda a informação é armazenada em ficheiros de texto, garantindo a persistência dos dados entre diferentes execuções da aplicação.
 
 ---
 
-## **Estrutura do Projecto**
+# Funcionalidades
+
+## Administrador
+
+- Registar utilizadores;
+- Atualizar utilizadores;
+- Bloquear e desbloquear utilizadores;
+- Remover utilizadores;
+- Listar utilizadores;
+- Registar cidades;
+- Remover cidades;
+- Registar rotas;
+- Remover rotas;
+- Atualizar o estado das vias;
+- Consultar o melhor percurso entre cidades.
+
+---
+
+## Condutor
+
+- Publicar viagens;
+- Listar as suas viagens;
+- Iniciar viagens;
+- Terminar viagens;
+- Cancelar viagens;
+- Consultar passageiros inscritos;
+- Consultar a melhor rota para um destino.
+
+---
+
+## Passageiro
+
+- Procurar viagens;
+- Reservar lugar;
+- Cancelar reserva;
+- Consultar viagens disponíveis.
+
+---
+
+# Tecnologias Utilizadas
+
+- Linguagem C
+- Programação Modular
+- Ficheiros de Texto
+
+---
+
+# Estruturas de Dados Utilizadas
+
+- Tabela Hash
+- Lista Ligada
+- Grafo
+
+---
+
+# Estrutura do Projeto
 
 ```text
-ExameEDII_T2_G13
-    ├── imagens
-    │   ├── adm.png
-    │   ├── condutor.png
-    │   └── passageiro.png
-    ├── Projecto
-    │   ├── avl.c
-    │   ├── avl.h
-    │   ├── executavel
-    │   ├── fila.h
-    │   ├── grafo.c
-    │   ├── grafo.h
-    │   ├── hash.c
-    │   ├── hash.h
-    │   ├── lista.c
-    │   ├── lista.h
-    │   ├── mainMPega.c
-    │   ├── menu.h
-    │   └── menus.c
-    ├── README.md
-    └── TrabalhoFinal_EDII_2026.pdf
+ExameEDII_T3_G13
+│   ├── imagens
+│   │   ├── adm.png
+│   │   ├── condutor.png
+│   │   ├── login.png
+│   │   └── passageiro.png
+│   ├── Projecto
+│   │   ├── cidades.txt
+│   │   ├── dashboard.c
+│   │   ├── dashboard.h
+│   │   ├── executavel
+│   │   ├── ficheiros.c
+│   │   ├── ficheiros.h
+│   │   ├── grafo.c
+│   │   ├── grafo.h
+│   │   ├── hash.c
+│   │   ├── hash.h
+│   │   ├── lista.c
+│   │   ├── lista.h
+│   │   ├── mainMPega.c
+│   │   ├── reservas.txt
+│   │   ├── rotas.txt
+│   │   ├── tipos.h
+│   │   ├── usuarios.txt
+│   │   ├── viagem.c
+│   │   ├── viagem.h
+│   │   └── viagens.txt
+│   ├── README.md
+│   ├── Relatorio_T3_G13.pdf
+│   └── TrabalhoFinal_EDII_2026.pdf
+
 ```
 
 ---
 
-## **Ficheiros**
+# Persistência dos Dados
 
-- usuario.txt;
-- rotas.txt;
-  -...
+O sistema guarda automaticamente todas as informações nos seguintes ficheiros:
 
-### Ainda em fase de discussão, pois pensamos em acrescentar mais um.
+| Ficheiro | Informação armazenada |
+|----------|----------------------|
+| **usuarios.txt** | Utilizadores |
+| **cidades.txt** | Cidades |
+| **rotas.txt** | Rotas |
+| **viagens.txt** | Viagens |
+| **reservas.txt** | Reservas dos passageiros |
+
+Desta forma, nenhuma informação é perdida quando a aplicação é encerrada.
 
 ---
 
-## **Tipos**
+# Módulos do Sistema
 
-**1 - AVL**
+## Hash
 
-- NoAvl;
-- AVL;
+Responsável pela gestão dos utilizadores, autenticação e controlo dos perfis através de uma Tabela Hash.
 
-**2 - Fila**
+---
 
-- NoFila;
-- Fila;
+## Grafo
 
-**3 - Grafo**
+Responsável pela gestão das cidades e rotas, bem como pela determinação do melhor percurso utilizando o algoritmo de Dijkstra.
 
-- Adjacencia;
-- Vertice;
-- Grafo;
+---
 
-**4 - Hastable Encadeado**
-...
+## Viagem
 
-**5 - Lista**
+Responsável pela publicação, pesquisa, reserva, cancelamento e gestão das viagens.
 
-- Usuario;
-- No;
-- Lista;
+---
 
-**6 - Menu**
+## Ficheiros
 
-- ...
+Responsável por guardar e carregar todas as informações do sistema.
 
-## **Métodos**
+---
 
-**1 - AVL**
+## Dashboard
 
-```bash
-// Funções da AVL
-// Criação
-AVL *criarAVL();
-NoAvl *criarNoAVL(int valor);
+Responsável pelos menus, navegação e interação entre o utilizador e o sistema.
 
-// Auxiliares
-int alturaAVL(NoAvl *raiz);
-int maximoAVL(int a, int b);
-int fatorBalanceamento(NoAvl *raiz);
-NoAvl *menorNoAVL(NoAvl *raiz);
+---
 
-// Rotações
-NoAvl *rotacaoDireita(NoAvl *y);
-NoAvl *rotacaoEsquerda(NoAvl *x);
-
-// Operações
-NoAvl *inserirAVL(NoAvl *raiz, int valor);
-NoAvl *removerAVL(NoAvl *raiz, int valor);
-NoAvl *buscarAVL(NoAvl *raiz, int valor);
-
-// Percursos
-void emOrdem(NoAvl *raiz);
-void preOrdem(NoAvl *raiz);
-void posOrdem(NoAvl \*raiz);
-
-// Utilidades
-void mostrarAVL(NoAvl *raiz, int nivel);
-int contarNos(NoAvl *raiz);
-int arvoreVazia(NoAvl *raiz);
-void destruirAVL(NoAvl *raiz);
-```
-
-**2 - Fila**
+# Compilação
 
 ```bash
-...
+gcc *.c -Wall -Wextra -Werror -o executavel
 ```
 
-**3 - Grafo**
+---
 
-```bash
-...
-```
-
-**4 - Hastable Encadeado**
-
-```bash
-void inicializarTabela(Lista t[]);
-int funcaoHash(int id);
-
-void inserir_usuario(Lista t[], Usuario u);
-No \*buscarUsuario(Lista t[], int id);
-int remover(Lista t[], int id);
-void imprimirTabela(Lista t[]);
-
-// Funções de controle do sistema (Cadastro, Menus e Login)
-void cadastrar_usuario(Lista t[]);
-void fazerLogin(Lista t[]);
-Usuario \*login(Lista t[], char email[], char senha[]);
-
-// Menus
-void menuPassageiro(Usuario u);
-void menuAdmin(Usuario u);
-void menuCondutor(Usuario u);
-void sessao();
-
-// auxiliares
-void limparTela();
-void aguardarEnter();
-```
-
-**5 - Lista**
-
-```bash
-void inicializar(Lista *l);
-void inserir_Lista(Lista *l, Usuario u);
-No *buscar(Lista *l, int id);
-int remover_Lista(Lista *l, int id);
-void imprimir(Lista *l);
-```
-
-**6 - Menu**
-
-```bash
-int menuADM();
-int menuConduto();
-int menuPassageir();
-```
-
-## **Como Executar**
-
-Caso já tenha o GitHub instalado e configurado no terminal do VSCode, é só copiar e colar os seguintes códigos no terminal do VSCode:
-
-Para compilar:
-
-```bash
-gcc \*.c -Wall -Wextra -Werror -o executavel
-```
-
-Para Executar:
+# Execução
 
 ```bash
 ./executavel
 ```
 
-## **Anexos Dos Menus em Imagem**
+---
 
-### Menu Admnistrador
+# Interface do Sistema
 
-![Administrador](imagens/adm.png)
+## Menu Inicial
 
-### Menu Condutor
+<p align="center">
+<img src="imagens/login.png" width="700">
+</p>
 
-![Condutor](imagens/condutor.png)
+---
 
-### Menu Passageiro
+## Menu do Administrador
 
-![Passageiro](imagens/passageiro.png)
+<p align="center">
+<img src="imagens/adm.png" width="700">
+</p>
 
-## **Notas**
+---
 
-O Sistema já está quase finalizado, só falta terminarmos a parte dos grafos das vias
+## Menu do Condutor
 
-## **Futuras melhorias**
+<p align="center">
+<img src="imagens/condutor.png" width="700">
+</p>
 
-### Tornar mais inteligente a procura, e criar mais funcionalidades.
+---
+
+## Menu do Passageiro
+
+<p align="center">
+<img src="imagens/passageiro.png" width="700">
+</p>
+
+---
+
+# Futuras Melhorias
+
+- Melhorar o algoritmo de procura de viagens.
+- Implementar filtros avançados de pesquisa.
+- Adicionar histórico de viagens.
+- Desenvolver uma interface gráfica.
+- Implementar notificações aos utilizadores.
+
+---
+
+# Licença
+
+Projeto desenvolvido exclusivamente para fins académicos no âmbito da disciplina de **Estruturas de Dados II**.
+
+---
+
+<h3 align="center">
+MPEGA — Sistema Inteligente de Partilha de Viagens
+</h3>
+
+<p align="center">
+Desenvolvido pelo Grupo 13
+</p>

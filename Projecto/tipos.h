@@ -1,6 +1,9 @@
-#ifndef SISTEMA_TIPOS_H
-#define SISTEMA_TIPOS_H
+#ifndef TIPOS_H
+#define TIPOS_H
 
+/* =========================================
+               CONSTANTES
+========================================= */
 #define MAX_NOME 50
 #define MAX_TELEFONE 20
 #define MAX_BI 20
@@ -9,67 +12,79 @@
 #define MAX_ESTADO 200
 #define MAX_CIDADES 100
 #define MAX_ROTAS 3000
+#define MAX_ID 20
 
-typedef struct {
+/* =========================================
+                 ESTRUTURAS
+========================================= */
+
+/* ==========================
+           CIDADE
+   ========================== */
+typedef struct
+{
     int idCidade;
     char nome[MAX_NOME];
 } Cidade;
 
-typedef struct {
-    int idRota;
-    int origem;
-    int destino;
+/* ==========================
+            ROTA
+   ========================== */
+typedef struct
+{
+    char idRota[MAX_ID];    // Alterado para String (Código único)
+    char origem[MAX_NOME];  // CORRIGIDO: String para armazenar o nome da cidade de origem
+    char destino[MAX_NOME]; // CORRIGIDO: String para armazenar o nome da cidade de destino
     int distancia;
     int tempoEstimado;
-    char estadoVia[MAX_ESTADO];
+    char estadoVia[MAX_ESTADO]; // Estado: "Boa", "Razoável", "Má" ou "Interditada"[cite: 1]
 } Rota;
 
-typedef struct {
+/* ==========================
+          VEÍCULO
+   ========================== */
+typedef struct
+{
     int idVeiculo;
     char matricula[MAX_MATRICULA];
     char modelo[MAX_MODELO];
     int capacidade;
     int lugaresDisponiveis;
-    char estado[MAX_ESTADO];
+    char estado[MAX_ESTADO]; // Estado: "Vazio", "Disponível", "Quase Lotado", "Cheio"[cite: 1]
 } Veiculo;
 
-typedef struct {
-    int idMotorista;
-    char nome[MAX_NOME];
-    char BI[MAX_BI];
-    char telefone[MAX_TELEFONE];
-    int cidadeOrigem;
-    int cidadeDestino;
-    int idVeiculo;
-} Motorista;
+/* ==========================
+         VIAGEM
+   ========================== */
 
-typedef struct {
+typedef struct NoPassageiro
+{
     int idPassageiro;
-    char nome[MAX_NOME];
-    char BI[MAX_BI];
-    char telefone[MAX_TELEFONE];
-    int cidadeOrigem;
-    int cidadeDestino;
-} Passageiro;
+    struct NoPassageiro *prox;
 
-typedef struct {
+} NoPassageiro;
+typedef struct
+{
     int idViagem;
-    int idMotorista;
-    int idVeiculo;
-    int cidadeOrigem;
-    int cidadeDestino;
-    int distancia;
-    int tempoEstimado;
-    float precoEstimado;
-    int lugaresDisponiveis;
-    char estado[MAX_ESTADO];
-} Viagem;
 
-typedef struct {
-    int idAdministrador;
-    char nome[MAX_NOME];
-    char BI[MAX_BI];
-    char telefone[MAX_TELEFONE];
-} Administrador;
+    int idMotorista;
+
+    int idVeiculo;
+
+    char cidadeOrigem[MAX_NOME];
+
+    char cidadeDestino[MAX_NOME];
+
+    int distancia;
+
+    int tempoEstimado;
+
+    float precoEstimado;
+
+    int lugaresDisponiveis;
+
+    char estado[MAX_ESTADO];
+    NoPassageiro *listaPassageiros;
+} Viagem;
 
 #endif

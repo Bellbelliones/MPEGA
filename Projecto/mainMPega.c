@@ -8,7 +8,8 @@
 int main()
 {
     Lista tabela[TAM];
-
+    totalCidades = 0;
+    totalRotas = 0;
     inicializarTabela(tabela);
 
     inicializarGrafo();
@@ -22,6 +23,7 @@ int main()
     carregarViagens();
     carregarReservas();
 
+    aguardarEnter();
     sessao(tabela);
     return 0;
 }

@@ -296,7 +296,7 @@ void fazerLogin(Lista t[])
     switch (u->tipo)
     {
     case 1:
-        menuPassageiro(*u);
+        menuPassageiro(t, *u);
         break;
     case 2:
         menuCondutor(t, *u);

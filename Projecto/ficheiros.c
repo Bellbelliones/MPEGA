@@ -84,18 +84,27 @@ void carregarCidades()
     FILE *fp = fopen("cidades.txt", "r");
 
     if (fp == NULL)
-        return;
-
-    totalCidades = 0;
-
-    while (fscanf(fp, "%d;%49[^;\n]\n",
-                  &cidades[totalCidades].idCidade,
-                  cidades[totalCidades].nome) == 2)
     {
-        totalCidades++;
+        printf("ERRO: nao foi possivel abrir cidades.txt\n");
+        return;
+    }
+
+    printf("Ficheiro aberto com sucesso!\n");
+
+    Cidade c;
+
+    while (fscanf(fp, "%d;%49[^\n]",
+                  &c.idCidade,
+                  c.nome) == 2)
+    {
+        printf("Lida cidade: %d - %s\n", c.idCidade, c.nome);
+
+        adicionarCidade(c);
     }
 
     fclose(fp);
+
+    printf("Total cidades = %d\n", totalCidades);
 }
 void guardarRotas()
 {
@@ -127,35 +136,33 @@ void carregarRotas()
 
     totalRotas = 0;
 
+    inicializarGrafo(); // limpa apenas a matriz
+
+    Rota r;
+
     while (fscanf(fp,
-                  "%19[^;];%49[^;];%49[^;];%d;%d;%199[^\n]\n",
-                  rotas[totalRotas].idRota,
-                  rotas[totalRotas].origem,
-                  rotas[totalRotas].destino,
-                  &rotas[totalRotas].distancia,
-                  &rotas[totalRotas].tempoEstimado,
-                  rotas[totalRotas].estadoVia) == 6)
+                  "%19[^;];%49[^;];%49[^;];%d;%d;%199[^\n]",
+                  r.idRota,
+                  r.origem,
+                  r.destino,
+                  &r.distancia,
+                  &r.tempoEstimado,
+                  r.estadoVia) == 6)
     {
+        rotas[totalRotas] = r;
+
+        int origem = procurarCidadePorNome(r.origem);
+        int destino = procurarCidadePorNome(r.destino);
+
+        if (origem != -1 && destino != -1)
+        {
+            matriz[origem][destino] = r.distancia;
+        }
+        printf("Rota de %s para %s adicionada\n", r.origem, r.destino);
         totalRotas++;
     }
 
     fclose(fp);
-
-    /* RECONSTRÓI O GRAFO */
-
-    inicializarGrafo();
-
-    for (int i = 0; i < totalRotas; i++)
-    {
-        int origem = procurarCidadePorNome(rotas[i].origem);
-
-        int destino = procurarCidadePorNome(rotas[i].destino);
-
-        if (origem != -1 && destino != -1)
-        {
-            matriz[origem][destino] = rotas[i].distancia;
-        }
-    }
 }
 
 // PARA CONTROLE DE VIAGENS
@@ -206,6 +213,7 @@ void carregarViagens()
                   &viagens[totalViagens].lugaresDisponiveis,
                   viagens[totalViagens].estado) == 10)
     {
+        printf("Viagem do usuario de id %d\n carregada com sucesso\n", viagens[totalViagens].idMotorista);
         viagens[totalViagens].listaPassageiros = NULL;
         totalViagens++;
     }

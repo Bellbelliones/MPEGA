@@ -36,9 +36,6 @@ void inicializarGrafo()
             matriz[i][j] = 0;
         }
     }
-
-    totalCidades = 0;
-    totalRotas = 0;
 }
 
 /*=========================================
@@ -59,6 +56,19 @@ int existeCidade(int idCidade)
     return 0;
 }
 
+Rota *buscarRota(char origem[], char destino[])
+{
+    for (int i = 0; i < totalRotas; i++)
+    {
+        if (strcmp(rotas[i].origem, origem) == 0 &&
+            strcmp(rotas[i].destino, destino) == 0)
+        {
+            return &rotas[i];
+        }
+    }
+
+    return NULL;
+}
 /* Verifica se já existe uma cidade com o mesmo nome */
 int existeCidadeNome(char nome[])
 {

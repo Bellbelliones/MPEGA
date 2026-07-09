@@ -9,6 +9,20 @@
 Viagem viagens[MAX_VIAGENS];
 
 int totalViagens = 0;
+int condutorPossuiViagemAtiva(int idMotorista)
+{
+    for (int i = 0; i < totalViagens; i++)
+    {
+        if (viagens[i].idMotorista == idMotorista &&
+            strcmp(viagens[i].estado, "Terminada") != 0 &&
+            strcmp(viagens[i].estado, "Cancelada") != 0)
+        {
+            return 1;
+        }
+    }
+
+    return 0;
+}
 int publicarViagem(Viagem viagem)
 {
     if (totalViagens >= MAX_VIAGENS)
@@ -60,7 +74,7 @@ void listarViagens()
         printf("\n-----------------------------------------\n");
     }
 }
-void procurarViagem()
+void procurarViagem(Lista t[])
 {
     char origem[MAX_NOME];
     char destino[MAX_NOME];
@@ -88,7 +102,17 @@ void procurarViagem()
             encontrou = 1;
 
             printf("\nCódigo........: %d", viagens[i].idViagem);
-            printf("\nMotorista.....: %d", viagens[i].idMotorista);
+            No *motorista = buscarUsuario(t, viagens[i].idMotorista);
+
+            if (motorista != NULL)
+            {
+                printf("\nMotorista.....: %s", motorista->user.nome);
+                printf("\nTelefone......: %s", motorista->user.telefone);
+            }
+            else
+            {
+                printf("\nMotorista.....: Não encontrado");
+            }
             printf("\nOrigem........: %s", viagens[i].cidadeOrigem);
             printf("\nDestino.......: %s", viagens[i].cidadeDestino);
             printf("\nPreço.........: %.2f Kz", viagens[i].precoEstimado);

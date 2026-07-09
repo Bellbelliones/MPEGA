@@ -41,7 +41,7 @@ int procurarCidadePorNome(char nome[]);
 
 /* Lista todas as cidades cadastradas no ecrã */
 void listarCidades();
-
+Rota *buscarRota(char origem[], char destino[]);
 /*=========================================
             ROTAS (ARESTAS)
 =========================================*/

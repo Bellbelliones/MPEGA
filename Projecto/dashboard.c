@@ -16,7 +16,7 @@
 #define WHITE "\033[1;37m"
 // ================== INTERFACE DO USUARIO ========================
 
-int menuPassageiro(Usuario u)
+int menuPassageiro(Lista t[], Usuario u)
 {
     int op;
 
@@ -56,7 +56,7 @@ int menuPassageiro(Usuario u)
             printf("╚══════════════════════════════════════════════════════════════╝\n");
             printf(RESET);
 
-            procurarViagem();
+            procurarViagem(t);
 
             aguardarEnter();
             break;
@@ -162,39 +162,67 @@ int menuCondutor(Lista t[], Usuario u)
             limparTela();
 
             printf("=========== PUBLICAR VIAGEM ===========\n\n");
+            if (condutorPossuiViagemAtiva(u.id))
+            {
+                printf("\nEste condutor já possui uma viagem ativa.\n");
+            }
+            else
+            {
+                printf("ID da Viagem: ");
+                scanf("%d", &v.idViagem);
 
-            printf("ID da Viagem: ");
-            scanf("%d", &v.idViagem);
+                v.idMotorista = u.id;
 
-            v.idMotorista = u.id;
+                printf("ID do Veículo: ");
+                scanf("%d", &v.idVeiculo);
 
-            printf("ID do Veículo: ");
-            scanf("%d", &v.idVeiculo);
+                printf("Cidade de Origem: ");
+                scanf(" %49[^\n]", v.cidadeOrigem);
 
-            printf("Cidade de Origem: ");
-            scanf(" %49[^\n]", v.cidadeOrigem);
+                printf("Cidade de Destino: ");
+                scanf(" %49[^\n]", v.cidadeDestino);
+                if (existeCidadeNome(v.cidadeOrigem) == 0)
+                {
+                    printf("A origem que digitou não existe\n");
+                }
+                else if (existeCidadeNome(v.cidadeDestino) == 0)
+                {
+                    printf("O destino que digitou não existe\n");
+                }
+                else if (existeRota(v.cidadeOrigem, v.cidadeDestino) == 1)
+                {
+                    Rota *r = buscarRota(v.cidadeOrigem, v.cidadeDestino);
 
-            printf("Cidade de Destino: ");
-            scanf(" %49[^\n]", v.cidadeDestino);
+                    if (r == NULL)
+                    {
+                        printf("Erro ao localizar a rota.\n");
+                    }
+                    else
+                    {
+                        printf("\nRota encontrada!\n");
+                        printf("Distância.....: %d km\n", r->distancia);
+                        printf("Tempo.........: %d minutos\n", r->tempoEstimado);
+                        v.distancia = r->distancia;
+                        v.tempoEstimado = r->tempoEstimado;
 
-            printf("Distância: ");
-            scanf("%d", &v.distancia);
+                        printf("Preço: ");
+                        scanf("%f", &v.precoEstimado);
 
-            printf("Tempo Estimado: ");
-            scanf("%d", &v.tempoEstimado);
+                        printf("Lugares Disponíveis: ");
+                        scanf("%d", &v.lugaresDisponiveis);
 
-            printf("Preço: ");
-            scanf("%f", &v.precoEstimado);
+                        strcpy(v.estado, "Disponível");
 
-            printf("Lugares Disponíveis: ");
-            scanf("%d", &v.lugaresDisponiveis);
+                        v.listaPassageiros = NULL;
 
-            strcpy(v.estado, "Disponível");
-
-            v.listaPassageiros = NULL;
-
-            publicarViagem(v);
-
+                        publicarViagem(v);
+                    }
+                }
+                else
+                {
+                    printf("Não existe uma rota com a origem e destino que você digitou\n");
+                }
+            }
             aguardarEnter();
 
             break;
@@ -594,10 +622,13 @@ int menuAdmin(Lista t[], Usuario u)
 
                             printf("Destino: ");
                             scanf("\n%[^\n]", r.destino);
-
-                            printf("Distancia: ");
-                            scanf("%d", &r.distancia);
-
+                            do
+                            {
+                                printf("Distancia: ");
+                                scanf("%d", &r.distancia);
+                                if (r.distancia <= 0)
+                                    printf("A distancia precisa ser maior que zero\n");
+                            } while (r.distancia <= 0);
                             printf("Tempo: ");
                             scanf("%d", &r.tempoEstimado);
 

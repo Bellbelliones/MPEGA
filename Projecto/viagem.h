@@ -16,12 +16,12 @@ extern int totalViagens;
 /*==============================
       GESTÃO DE VIAGENS
 ==============================*/
-
+int condutorPossuiViagemAtiva(int idMotorista);
 int publicarViagem(Viagem viagem);
 
 void listarViagens();
 
-void procurarViagem();
+void procurarViagem(Lista t[]);
 
 Viagem *buscarViagem(int idViagem);
 
